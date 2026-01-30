@@ -2,229 +2,255 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Convite Interativo</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#000}
+*{
+  margin:0;
+  padding:0;
+  box-sizing:border-box;
+}
 
-/* ===== VÍDEO ===== */
-#video{
+html,body{
+  width:100%;
+  height:100%;
+  overflow:hidden;
+  background:#000;
+  font-family:Arial,sans-serif;
+}
+
+/* ===== CENAS ===== */
+.cena{
   position:absolute;
   inset:0;
+  display:none;
+}
+
+.cena.active{
+  display:block;
+}
+
+video,img{
   width:100%;
   height:100%;
   object-fit:cover;
-  z-index:1;
 }
 
-/* ===== ÁUDIO ===== */
-#audio{display:none}
-
-/* ===== RODAPÉ VÍDEO 1 ===== */
-#footerInvite{
+/* ===== HOTSPOTS ===== */
+.hotspot{
   position:absolute;
-  bottom:6%;
-  width:100%;
-  text-align:center;
-  color:#fff;
-  font-family:Arial,sans-serif;
-  z-index:5;
-}
-#footerInvite span{
-  display:block;
-  margin-top:6px;
-  font-size:18px;
+  cursor:pointer;
 }
 
-/* ===== DEBUG ===== */
-.debug{background:rgba(255,0,0,.35)}
-
-/* ===== CLIQUE VIDEO 1 ===== */
-#video1Click{
-  position:absolute;
+/* ===== CENA 1 ===== */
+.hotspot-full{
   inset:0;
+}
+
+/* ===== TOPO ===== */
+.top-bar{
+  position:absolute;
+  top:0;
+  width:100%;
+  height:60px;
   z-index:10;
 }
 
-/* ===== CONTROLE SOM ===== */
-#audioControl{
-  position:absolute;
-  top:15px;
-  left:15px;
+.hotspot-audio{
+  left:0;
+  top:0;
   width:80px;
-  height:80px;
-  z-index:20;
-  display:none;
+  height:100px;
 }
 
-/* ===== BOTÃO MENU ===== */
-#menuToggle{
-  position:absolute;
+.hotspot-menu{
+  right:120px;
   top:15px;
-  right:15px;
-  width:120px;
-  height:80px;
-  z-index:20;
-  display:none;
+  width:80px;
+  height:120px;
 }
 
-/* ===== BOTÃO RETORNO (VÍDEOS 3,4,5) ===== */
-#backToVideo2{
+/* ===== CRONÔMETRO ===== */
+#timer{
   position:absolute;
-  top:15px;
-  right:15px;
-  width:120px;
-  height:80px;
-  z-index:20;
-  display:none;
-}
-
-/* ===== MENU ===== */
-#menu{
-  position:absolute;
-  right:0;
-  top:50%;
-  transform:translateY(-50%);
-  width:260px;
-  height:360px;
-  background:url("media/menu.png") no-repeat right center;
-  background-size:contain;
+  top:30px;
+  left:50%;
+  transform:translateX(-50%);
+  color:#fff;
+  font-size:24px;
+  white-space:nowrap;
   display:none;
   z-index:15;
 }
 
-/* ===== HOTSPOTS MENU ===== */
-.menu-hotspot{
+/* ===== MENU LATERAL ===== */
+.menu-container{
   position:absolute;
-  right:20px;
-  width:120px;
-  height:80px;
-  cursor:pointer;
+  right:0;                     /* ENCOSTADO NA BORDA */
+  top:50%;
+  transform:translateY(-50%);
+  width:435.1px;
+  height:563px;
+  display:none;
+  z-index:20;
+
+  background-image:url("media/menu-botoes.png");
+  background-size:105% auto;   /* 🔧 AJUSTE CIRÚRGICO */
+  background-repeat:no-repeat;
+  background-position:center;
 }
 
-#btn1{ top:60px; }
-#btn2{ top:155px; }
-#btn3{ top:250px; }
+/* HOTSPOTS DO MENU */
+.menu-btn{
+  position:absolute;
+  left:0;
+  width:100%;
+  height:171px;
+}
 
+.btn-local{ top:0 }
+.btn-quando{ top:196px }   /* 171 + 25 */
+.btn-dicas{ top:392px }    /* (171 * 2) + (25 * 2) */
+
+/* ===== RODAPÉ ===== */
+.bottom-bar{
+  position:absolute;
+  bottom:0;
+  width:100%;
+  height:120px;
+  display:flex;
+  justify-content:space-between;
+  z-index:10;
+}
+
+.bottom-bar a{
+  width:120px;
+  height:120px;
+}
+
+/* ===== VOLTAR ===== */
+.hotspot-back{
+  top:0;
+  right:120px;
+  width:120px;
+  height:120px;
+}
+
+/* ===== RESPONSIVO ===== */
+@media(max-width:768px){
+  .hotspot-menu,
+  .hotspot-back{
+    right:70px;
+  }
+
+  .menu-container{
+    transform:translateY(-50%) scale(0.95);
+  }
+}
 </style>
 </head>
 
 <body>
 
-<video id="video" autoplay muted playsinline loop></video>
-<audio id="audio" src="media/audio.mp3" loop></audio>
+<!-- ÁUDIO -->
+<audio id="bgAudio" src="media/audio.mp3" loop></audio>
 
-<div id="video1Click"></div>
-<div id="footerInvite"></div>
+<!-- ===== CENA 1 ===== -->
+<section id="cena1" class="cena active">
+  <video src="media/video1.mp4" autoplay muted playsinline></video>
+  <div class="hotspot hotspot-full" onclick="goToCena(2)"></div>
+</section>
 
-<div id="audioControl" class="debug"></div>
-<div id="menuToggle" class="debug"></div>
-<div id="backToVideo2" class="debug"></div>
+<!-- ===== CENA 2 ===== -->
+<section id="cena2" class="cena">
+  <video id="video2" src="media/video2.mp4" autoplay muted playsinline></video>
 
-<div id="menu">
-  <div id="btn1" class="menu-hotspot debug" onclick="goVideo(3)"></div>
-  <div id="btn2" class="menu-hotspot debug" onclick="goVideo(4)"></div>
-  <div id="btn3" class="menu-hotspot debug" onclick="goVideo(5)"></div>
-</div>
+  <div class="top-bar">
+    <div class="hotspot hotspot-audio" onclick="toggleAudio()"></div>
+    <div id="timer"></div>
+    <div class="hotspot hotspot-menu" onclick="toggleMenu()"></div>
+  </div>
+
+  <!-- MENU -->
+  <div id="menu" class="menu-container">
+
+    <a class="menu-btn btn-local"
+       href="https://maps.app.goo.gl/jmbXcW447N8cxpAK7"
+       target="_blank"></a>
+
+    <div class="menu-btn btn-quando" onclick="goToCena(3)"></div>
+    <div class="menu-btn btn-dicas" onclick="goToCena(4)"></div>
+
+  </div>
+
+  <!-- RODAPÉ -->
+  <div class="bottom-bar">
+    <a href="https://forms.gle/zaKSzLzWyr5njaBz5" target="_blank"></a>
+    <a href="https://forms.gle/aBkHeFj8dp7dUsC49" target="_blank"></a>
+  </div>
+</section>
+
+<!-- ===== CENA 3 ===== -->
+<section id="cena3" class="cena">
+  <img src="media/cena3.png">
+  <div class="hotspot hotspot-back" onclick="goToCena(2)"></div>
+</section>
+
+<!-- ===== CENA 4 ===== -->
+<section id="cena4" class="cena">
+  <img src="media/cena4.png">
+  <div class="hotspot hotspot-back" onclick="goToCena(2)"></div>
+</section>
 
 <script>
-/* ===== CONFIG ===== */
-const retornoVideo2Offset = 6;
+const audio = document.getElementById("bgAudio");
+let audioStarted = false;
 
-/* ===== CONVIDADOS ===== */
-const convidados = [
- "Drika","Andressa","Ramon","Myrtes","Thais",
- "Marcela","Tatiane","Kelly","Katia","Aline"
-];
+/* ===== TROCA DE CENA ===== */
+function goToCena(n){
+  document.querySelectorAll(".cena").forEach(c=>c.classList.remove("active"));
+  document.getElementById("cena"+n).classList.add("active");
 
-/* ===== ELEMENTOS ===== */
-const video = document.getElementById("video");
-const audio = document.getElementById("audio");
-const footer = document.getElementById("footerInvite");
-const clickV1 = document.getElementById("video1Click");
-const audioCtrl = document.getElementById("audioControl");
-const menuToggle = document.getElementById("menuToggle");
-const menu = document.getElementById("menu");
-const backBtn = document.getElementById("backToVideo2");
-
-/* ===== ESTADO ===== */
-let currentVideo = 1;
-let video2ReturnTime = 0;
-
-/* ===== INIT ===== */
-loadVideo(1);
-
-/* ===== LOAD VIDEO ===== */
-function loadVideo(n){
-  currentVideo = n;
-  video.src = `media/video${n}.mp4`;
-  video.loop = n !== 1;
-  video.load();
-  video.play();
-
-  footer.style.display = n === 1 ? "block" : "none";
-  clickV1.style.display = n === 1 ? "block" : "none";
-  audioCtrl.style.display = n === 2 ? "block" : "none";
-  menuToggle.style.display = n === 2 ? "block" : "none";
-  menu.style.display = "none";
-  backBtn.style.display = (n === 3 || n === 4 || n === 5) ? "block" : "none";
-
-  if(n === 1) showInvite();
-  if(n === 2){
-    video.onloadedmetadata = ()=>{
-      video2ReturnTime = Math.max(0, video.duration - retornoVideo2Offset);
-    };
+  if(!audioStarted){
+    audio.play().then(()=>audioStarted=true).catch(()=>{});
   }
 }
-
-/* ===== VIDEO 1 ===== */
-clickV1.onclick = ()=>{
-  audio.play();
-  loadVideo(2);
-};
-
-/* ===== TEXTO CONVIDADO ===== */
-function showInvite(){
-  const params = new URLSearchParams(window.location.search);
-  const nome = params.get("nome");
-  if(nome && convidados.includes(nome)){
-    footer.innerHTML = `<strong>${nome}</strong>
-    <span>Este convite foi preparado<br>especialmente para você</span>`;
-  }
-}
-
-/* ===== SOM ===== */
-audioCtrl.onclick = (e)=>{
-  e.stopPropagation();
-  audio.paused ? audio.play() : audio.pause();
-};
 
 /* ===== MENU ===== */
-menuToggle.onclick = (e)=>{
-  e.stopPropagation();
+function toggleMenu(){
+  const menu = document.getElementById("menu");
   menu.style.display = menu.style.display === "block" ? "none" : "block";
-};
-
-/* ===== BOTÃO RETORNO ===== */
-backBtn.onclick = ()=>{
-  loadVideo(2);
-  video.onloadedmetadata = ()=>{
-    video.currentTime = video2ReturnTime;
-  };
-};
-
-/* ===== MENU NAV ===== */
-function goVideo(n){
-  loadVideo(n);
 }
-</script>
 
-<!-- Proteção de autoria -->
-<div style="display:none" aria-hidden="true">
-© 2026 Cristiane Oliveira – Todos os direitos reservados.
-</div>
+/* ===== AUDIO ===== */
+function toggleAudio(){
+  audio.paused ? audio.play() : audio.pause();
+}
+
+/* ===== CRONÔMETRO ===== */
+const eventDate = new Date("2026-08-18T00:00:00");
+
+setInterval(()=>{
+  const now = new Date();
+  const diff = eventDate - now;
+  if(diff<=0){
+    timer.innerText="É hoje!";
+    return;
+  }
+  const d=Math.floor(diff/86400000);
+  const h=Math.floor(diff/3600000)%24;
+  const m=Math.floor(diff/60000)%60;
+  const s=Math.floor(diff/1000)%60;
+  timer.innerText=`${d}d ${h}h ${m}m ${s}s`;
+},1000);
+
+/* MOSTRAR CRONÔMETRO AO FINAL DO VIDEO */
+document.getElementById("video2")
+  .addEventListener("ended",()=>{
+    document.getElementById("timer").style.display="block";
+  });
+</script>
 
 </body>
 </html>
