@@ -84,10 +84,10 @@ video,img{
   z-index:15;
 }
 
-/* ===== MENU LATERAL ===== */
+/* ===== MENU LATERAL (BASE REAL) ===== */
 .menu-container{
   position:absolute;
-  right:0;                     /* ENCOSTADO NA BORDA */
+  right:0;
   top:50%;
   transform:translateY(-50%);
   width:435.1px;
@@ -95,13 +95,14 @@ video,img{
   display:none;
   z-index:20;
 
+  /* 🔥 AJUSTE CIRÚRGICO AQUI */
   background-image:url("media/menu-botoes.png");
-  background-size:105% auto;   /* 🔧 AJUSTE CIRÚRGICO */
+  background-size:110% auto;   /* ⬅️ AUMENTADO */
   background-repeat:no-repeat;
   background-position:center;
 }
 
-/* HOTSPOTS DO MENU */
+/* ===== HOTSPOTS DOS BOTÕES ===== */
 .menu-btn{
   position:absolute;
   left:0;
@@ -109,9 +110,9 @@ video,img{
   height:171px;
 }
 
-.btn-local{ top:0 }
-.btn-quando{ top:196px }   /* 171 + 25 */
-.btn-dicas{ top:392px }    /* (171 * 2) + (25 * 2) */
+.btn-local{ top:0; }
+.btn-quando{ top:196px; }
+.btn-dicas{ top:392px; }
 
 /* ===== RODAPÉ ===== */
 .bottom-bar{
@@ -137,15 +138,11 @@ video,img{
   height:120px;
 }
 
-/* ===== RESPONSIVO ===== */
+/* ===== MOBILE ===== */
 @media(max-width:768px){
   .hotspot-menu,
   .hotspot-back{
     right:70px;
-  }
-
-  .menu-container{
-    transform:translateY(-50%) scale(0.95);
   }
 }
 </style>
@@ -153,16 +150,13 @@ video,img{
 
 <body>
 
-<!-- ÁUDIO -->
 <audio id="bgAudio" src="media/audio.mp3" loop></audio>
 
-<!-- ===== CENA 1 ===== -->
 <section id="cena1" class="cena active">
   <video src="media/video1.mp4" autoplay muted playsinline></video>
   <div class="hotspot hotspot-full" onclick="goToCena(2)"></div>
 </section>
 
-<!-- ===== CENA 2 ===== -->
 <section id="cena2" class="cena">
   <video id="video2" src="media/video2.mp4" autoplay muted playsinline></video>
 
@@ -174,30 +168,25 @@ video,img{
 
   <!-- MENU -->
   <div id="menu" class="menu-container">
-
     <a class="menu-btn btn-local"
        href="https://maps.app.goo.gl/jmbXcW447N8cxpAK7"
        target="_blank"></a>
 
     <div class="menu-btn btn-quando" onclick="goToCena(3)"></div>
     <div class="menu-btn btn-dicas" onclick="goToCena(4)"></div>
-
   </div>
 
-  <!-- RODAPÉ -->
   <div class="bottom-bar">
     <a href="https://forms.gle/zaKSzLzWyr5njaBz5" target="_blank"></a>
     <a href="https://forms.gle/aBkHeFj8dp7dUsC49" target="_blank"></a>
   </div>
 </section>
 
-<!-- ===== CENA 3 ===== -->
 <section id="cena3" class="cena">
   <img src="media/cena3.png">
   <div class="hotspot hotspot-back" onclick="goToCena(2)"></div>
 </section>
 
-<!-- ===== CENA 4 ===== -->
 <section id="cena4" class="cena">
   <img src="media/cena4.png">
   <div class="hotspot hotspot-back" onclick="goToCena(2)"></div>
@@ -207,7 +196,6 @@ video,img{
 const audio = document.getElementById("bgAudio");
 let audioStarted = false;
 
-/* ===== TROCA DE CENA ===== */
 function goToCena(n){
   document.querySelectorAll(".cena").forEach(c=>c.classList.remove("active"));
   document.getElementById("cena"+n).classList.add("active");
@@ -217,18 +205,15 @@ function goToCena(n){
   }
 }
 
-/* ===== MENU ===== */
 function toggleMenu(){
   const menu = document.getElementById("menu");
   menu.style.display = menu.style.display === "block" ? "none" : "block";
 }
 
-/* ===== AUDIO ===== */
 function toggleAudio(){
   audio.paused ? audio.play() : audio.pause();
 }
 
-/* ===== CRONÔMETRO ===== */
 const eventDate = new Date("2026-08-18T00:00:00");
 
 setInterval(()=>{
@@ -245,7 +230,6 @@ setInterval(()=>{
   timer.innerText=`${d}d ${h}h ${m}m ${s}s`;
 },1000);
 
-/* MOSTRAR CRONÔMETRO AO FINAL DO VIDEO */
 document.getElementById("video2")
   .addEventListener("ended",()=>{
     document.getElementById("timer").style.display="block";
