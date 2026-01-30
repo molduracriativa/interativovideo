@@ -18,20 +18,19 @@ html, body {
 
 video {
   position: fixed;
-  top: 0;
-  left: 0;
+  inset: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-/* Hotspot invisível */
+/* ================= HOTSPOTS ================= */
 .hotspot {
   position: absolute;
-  background: rgba(255, 0, 0, 0.0);
+  background: rgba(255, 0, 0, 0.3); /* 🔴 ATIVO PARA AJUSTE */
 }
 
-/* Texto exclusivo do Vídeo 1 */
+/* ================= TEXTO VIDEO 1 ================= */
 #footerVideo1 {
   position: absolute;
   bottom: 6%;
@@ -51,12 +50,21 @@ video {
 #footerVideo1 .linha {
   font-size: 15px;
 }
+
+/* ================= MENU ================= */
+#menu {
+  position: absolute;
+  right: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  display: none;
+  z-index: 5;
+}
 </style>
 </head>
 
 <body>
 
-<!-- ================= LISTA FECHADA ================= -->
 <script>
 const convidados = [
   "Drika","Andressa","Ramon","Myrtes","Thais",
@@ -64,24 +72,24 @@ const convidados = [
 ];
 </script>
 
-<!-- ================= AUDIO GLOBAL ================= -->
 <audio id="bgAudio" src="media/audio.mp3" loop></audio>
 
-<!-- ================= VIDEOS ================= -->
 <video id="video1" src="media/video1.mp4" autoplay muted playsinline></video>
 <video id="video2" src="media/video2.mp4" playsinline hidden></video>
 <video id="video3" src="media/video3.mp4" playsinline hidden></video>
 <video id="video4" src="media/video4.mp4" playsinline hidden></video>
 <video id="video5" src="media/video5.mp4" playsinline hidden></video>
 
-<!-- ================= TEXTO VIDEO 1 ================= -->
+<!-- TEXTO VIDEO 1 -->
 <div id="footerVideo1">
   <div class="nome" id="nomeConvidado"></div>
   <div class="linha">Este convite foi preparado</div>
   <div class="linha">especialmente para você.</div>
 </div>
 
-<!-- ================= PROTEÇÃO ================= -->
+<!-- MENU -->
+<img id="menu" src="media/menu.png">
+
 <div style="display:none" aria-hidden="true">
 © 2026 Cristiane Oliveira – Todos os direitos reservados.
 </div>
@@ -90,6 +98,7 @@ const convidados = [
 /* ================= CONTROLE ================= */
 const videos = document.querySelectorAll("video");
 const audio = document.getElementById("bgAudio");
+const menu = document.getElementById("menu");
 
 function showVideo(id) {
   videos.forEach(v => {
@@ -106,45 +115,98 @@ function showVideo(id) {
   video.play();
 }
 
-/* Fade suave do áudio */
+/* Fade áudio */
 function fadeVolume(target, duration = 600) {
   const step = (target - audio.volume) / (duration / 50);
-  const interval = setInterval(() => {
+  const i = setInterval(() => {
     audio.volume += step;
     if ((step > 0 && audio.volume >= target) ||
         (step < 0 && audio.volume <= target)) {
       audio.volume = target;
-      clearInterval(interval);
+      clearInterval(i);
     }
   }, 50);
 }
 
 /* ================= VIDEO 1 ================= */
 window.onload = () => {
-  const params = new URLSearchParams(window.location.search);
-  const nome = params.get("nome");
-
+  const nome = new URLSearchParams(location.search).get("nome");
   document.getElementById("nomeConvidado").innerText =
     convidados.includes(nome) ? nome : "Convidado Especial";
 };
 
-/* Clique invisível tela cheia */
 const cliqueVideo1 = document.createElement("div");
 cliqueVideo1.className = "hotspot";
-cliqueVideo1.style.top = 0;
-cliqueVideo1.style.left = 0;
-cliqueVideo1.style.width = "100%";
-cliqueVideo1.style.height = "100%";
+Object.assign(cliqueVideo1.style, {
+  inset: 0
+});
 
 cliqueVideo1.onclick = () => {
-  audio.muted = false;
   audio.volume = 0;
   audio.play();
   fadeVolume(1);
   showVideo("video2");
 };
-
 document.body.appendChild(cliqueVideo1);
+
+/* ================= VIDEO 2 ================= */
+
+/* Controle de som – ESQUERDA */
+const soundToggle = document.createElement("div");
+Object.assign(soundToggle.style, {
+  position: "absolute",
+  left: 0,
+  top: 0,
+  width: "60px",
+  height: "100%"
+});
+soundToggle.className = "hotspot";
+soundToggle.onclick = () =>
+  audio.paused ? audio.play() : audio.pause();
+document.body.appendChild(soundToggle);
+
+/* Abrir menu – DIREITA */
+const menuToggle = document.createElement("div");
+Object.assign(menuToggle.style, {
+  position: "absolute",
+  right: 0,
+  top: 0,
+  width: "60px",
+  height: "100%"
+});
+menuToggle.className = "hotspot";
+menuToggle.onclick = () => {
+  menu.style.display = menu.style.display === "none" ? "block" : "none";
+};
+document.body.appendChild(menuToggle);
+
+/* Hotspots do menu */
+const menuContainer = document.createElement("div");
+Object.assign(menuContainer.style, {
+  position: "absolute",
+  right: 0,
+  top: "50%",
+  transform: "translateY(-50%)",
+  zIndex: 10
+});
+document.body.appendChild(menuContainer);
+
+["video3", "video4", "video5"].forEach((vid, i) => {
+  const btn = document.createElement("div");
+  btn.className = "hotspot";
+  Object.assign(btn.style, {
+    width: "120px",
+    height: "80px",
+    marginBottom: i < 2 ? "25px" : "0"
+  });
+
+  btn.onclick = () => {
+    showVideo(vid);
+    menu.style.display = "none";
+  };
+
+  menuContainer.appendChild(btn);
+});
 </script>
 
 </body>
