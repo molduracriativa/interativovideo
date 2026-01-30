@@ -22,7 +22,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 /* ===== ÁUDIO ===== */
 #audio{display:none}
 
-/* ===== TEXTO CONVIDADO ===== */
+/* ===== TEXTO ===== */
 #footerInvite{
   position:absolute;
   bottom:6%;
@@ -46,7 +46,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   font-size:18px;
 }
 
-/* ===== CLIQUE VÍDEO 1 ===== */
+/* ===== DEBUG ===== */
+.debug{background:rgba(255,0,0,.35)}
+
+/* ===== CLIQUE INICIAL ===== */
 #video1Click{
   position:absolute;
   inset:0;
@@ -91,7 +94,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 #btn2{top:195px}
 #btn3{top:295px}
 
-/* ===== HOTSPOT MAPS (VÍDEO 3) ===== */
+/* ===== MAPS VIDEO 3 ===== */
 #mapsHotspot{
   position:absolute;
   left:50%;
@@ -101,7 +104,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   height:120px;
   z-index:20;
   display:none;
-  cursor:pointer;
 }
 </style>
 </head>
@@ -114,24 +116,24 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 <div id="video1Click"></div>
 <div id="footerInvite"></div>
 
-<div id="audioControl"></div>
-<div id="menuToggle"></div>
-<div id="backToVideo2"></div>
+<div id="audioControl" class="debug"></div>
+<div id="menuToggle" class="debug"></div>
+<div id="backToVideo2" class="debug"></div>
 
 <div id="menu">
-  <div id="btn1" class="menu-hotspot" onclick="goVideo(3)"></div>
-  <div id="btn2" class="menu-hotspot" onclick="goVideo(4)"></div>
-  <div id="btn3" class="menu-hotspot" onclick="goVideo(5)"></div>
+  <div id="btn1" class="menu-hotspot debug" onclick="goVideo(3)"></div>
+  <div id="btn2" class="menu-hotspot debug" onclick="goVideo(4)"></div>
+  <div id="btn3" class="menu-hotspot debug" onclick="goVideo(5)"></div>
 </div>
 
-<!-- HOTSPOT MAPS -->
 <a id="mapsHotspot"
+   class="debug"
    href="https://maps.app.goo.gl/AZBjKdxYEqVsC6N38"
    target="_blank"></a>
 
 <script>
 const retornoVideo2Offset = 8;
-const retornoExtras = 9; // <<< TEMPO CORRETO
+const loopInicio = 6; // <<< PONTO CORRETO DO LOOP
 
 const convidados = [
  "Drika","Andressa","Ramon","Myrtes","Thais",
@@ -178,16 +180,18 @@ function loadVideo(n){
     video.onended = ()=> video.pause();
   }
 
-  /* ===== VÍDEOS 3,4,5 LOOP A PARTIR DE 9s ===== */
+  /* ===== VÍDEOS 3,4,5 ===== */
   if(n >= 3){
     video.onloadedmetadata = ()=>{
-      video.currentTime = retornoExtras;
+      if(video.currentTime < loopInicio){
+        video.currentTime = loopInicio;
+      }
       video.play();
     };
 
     video.ontimeupdate = ()=>{
-      if(video.currentTime >= video.duration - 0.25){
-        video.currentTime = retornoExtras;
+      if(video.currentTime >= video.duration - 0.15){
+        video.currentTime = loopInicio;
       }
     };
   }
