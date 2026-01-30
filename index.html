@@ -1,17 +1,17 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Convite Interativo</title>
 
 <style>
 html, body {
   margin: 0;
   padding: 0;
-  background: #000;
   width: 100%;
   height: 100%;
+  background: #000;
   overflow: hidden;
   font-family: Arial, sans-serif;
 }
@@ -31,15 +31,25 @@ video {
   background: rgba(255, 0, 0, 0.0);
 }
 
-/* Rodapé texto */
-.footer-text {
+/* Rodapé Video 1 */
+#footerVideo1 {
   position: absolute;
   bottom: 6%;
   width: 100%;
   text-align: center;
   color: #fff;
-  font-size: 16px;
   line-height: 1.4;
+  pointer-events: none;
+}
+
+#footerVideo1 .nome {
+  font-size: 18px;
+  font-weight: bold;
+  margin-bottom: 6px;
+}
+
+#footerVideo1 .linha {
+  font-size: 15px;
 }
 
 /* Menu */
@@ -51,12 +61,6 @@ video {
   display: none;
 }
 
-.menu-item {
-  width: 60px;
-  height: 60px;
-  margin-bottom: 25px;
-}
-
 /* Cronômetro */
 #countdown {
   position: absolute;
@@ -65,23 +69,12 @@ video {
   text-align: center;
   color: #fff;
 }
-
-.count-numbers {
-  font-size: 42px;
-  font-weight: bold;
-}
-
-.count-labels {
-  font-size: 14px;
-  margin-top: 8px;
-  letter-spacing: 2px;
-}
 </style>
 </head>
 
 <body>
 
-<!-- Lista fechada de convidados -->
+<!-- ================= CONVIDADOS ================= -->
 <script>
 const convidados = [
   "Drika","Andressa","Ramon","Myrtes","Thais",
@@ -89,58 +82,55 @@ const convidados = [
 ];
 </script>
 
-<!-- Áudio global -->
+<!-- ================= AUDIO GLOBAL ================= -->
 <audio id="bgAudio" src="media/audio.mp3" loop></audio>
 
-<!-- Vídeos -->
+<!-- ================= VIDEOS ================= -->
 <video id="video1" src="media/video1.mp4" autoplay muted playsinline></video>
 <video id="video2" src="media/video2.mp4" playsinline hidden></video>
 <video id="video3" src="media/video3.mp4" playsinline hidden></video>
 <video id="video4" src="media/video4.mp4" playsinline hidden></video>
 <video id="video5" src="media/video5.mp4" playsinline hidden></video>
 
-<!-- Rodapé Video 1 -->
-<div id="footerVideo1" class="footer-text">
-  <div id="nomeConvidado"></div>
-  <div>Este convite foi preparado</div>
-  <div>especialmente para você.</div>
+<!-- ================= TEXTO VIDEO 1 ================= -->
+<div id="footerVideo1">
+  <div class="nome" id="nomeConvidado"></div>
+  <div class="linha">Este convite foi preparado</div>
+  <div class="linha">especialmente para você.</div>
 </div>
 
-<!-- MENU -->
-<img id="menu" src="media/menu.png" />
+<!-- ================= MENU ================= -->
+<img id="menu" src="media/menu.png">
 
-<!-- CRONÔMETRO -->
-<div id="countdown" hidden>
-  <div class="count-numbers" id="countNumbers"></div>
-  <div class="count-labels">DIAS&nbsp;&nbsp;HORAS&nbsp;&nbsp;MIN&nbsp;&nbsp;SEG</div>
-</div>
-
-<!-- Proteção de autoria -->
+<!-- ================= PROTEÇÃO ================= -->
 <div style="display:none" aria-hidden="true">
 © 2026 Cristiane Oliveira – Todos os direitos reservados.
 </div>
 
 <script>
-/* ===================== CONFIGURAÇÕES ===================== */
-const voltarVideo3Delay = 6; // segundos editáveis
-const eventoData = new Date("2026-06-01T18:00:00"); // editar data do evento
+/* ================= CONFIG ================= */
+const voltarVideo3Delay = 6;
+const eventoData = new Date("2026-06-01T18:00:00");
 
-/* ===================== CONTROLE ===================== */
 const videos = document.querySelectorAll("video");
 const audio = document.getElementById("bgAudio");
 
+/* ================= FUNÇÕES ================= */
 function showVideo(id) {
   videos.forEach(v => {
     v.pause();
     v.hidden = true;
   });
+
+  document.getElementById("footerVideo1").style.display =
+    id === "video1" ? "block" : "none";
+
   const video = document.getElementById(id);
   video.hidden = false;
   video.currentTime = 0;
   video.play();
 }
 
-/* Volume suave */
 function fadeVolume(target, duration = 600) {
   const step = (target - audio.volume) / (duration / 50);
   const interval = setInterval(() => {
@@ -153,12 +143,8 @@ function fadeVolume(target, duration = 600) {
   }, 50);
 }
 
-/* ===================== VIDEO 1 ===================== */
+/* ================= VIDEO 1 ================= */
 window.onload = () => {
-  audio.volume = 0;
-  audio.play();
-  fadeVolume(1);
-
   const params = new URLSearchParams(window.location.search);
   const nome = params.get("nome");
 
@@ -166,67 +152,79 @@ window.onload = () => {
     convidados.includes(nome) ? nome : "Convidado Especial";
 };
 
-document.getElementById("video1").onclick = () => {
+/* Clique invisível tela cheia */
+const cliqueVideo1 = document.createElement("div");
+cliqueVideo1.className = "hotspot";
+cliqueVideo1.style.top = 0;
+cliqueVideo1.style.left = 0;
+cliqueVideo1.style.width = "100%";
+cliqueVideo1.style.height = "100%";
+
+cliqueVideo1.onclick = () => {
+  audio.muted = false;
+  audio.volume = 0;
+  audio.play();
+  fadeVolume(1);
   showVideo("video2");
 };
 
-/* ===================== VIDEO 2 ===================== */
+document.body.appendChild(cliqueVideo1);
+
+/* ================= VIDEO 2 ================= */
+/* controle som */
 const soundToggle = document.createElement("div");
 soundToggle.className = "hotspot";
-soundToggle.style.left = "0";
-soundToggle.style.top = "0";
+soundToggle.style.left = 0;
+soundToggle.style.top = 0;
 soundToggle.style.width = "60px";
 soundToggle.style.height = "100%";
+soundToggle.onclick = () => audio.paused ? audio.play() : audio.pause();
 document.body.appendChild(soundToggle);
 
-soundToggle.onclick = () => {
-  audio.paused ? audio.play() : audio.pause();
-};
-
+/* menu toggle */
 const menuToggle = document.createElement("div");
 menuToggle.className = "hotspot";
-menuToggle.style.right = "0";
-menuToggle.style.top = "0";
+menuToggle.style.right = 0;
+menuToggle.style.top = 0;
 menuToggle.style.width = "60px";
 menuToggle.style.height = "100%";
-document.body.appendChild(menuToggle);
-
 menuToggle.onclick = () => {
-  const menu = document.getElementById("menu");
   menu.style.display = menu.style.display === "none" ? "block" : "none";
 };
+document.body.appendChild(menuToggle);
 
-/* Menu hotspots */
+/* menu itens */
 ["video3","video4","video5"].forEach((vid, i) => {
   const btn = document.createElement("div");
-  btn.className = "hotspot menu-item";
-  btn.style.right = "0";
+  btn.className = "hotspot";
+  btn.style.width = "60px";
+  btn.style.height = "60px";
+  btn.style.right = 0;
   btn.style.top = `calc(50% + ${i * 85 - 85}px)`;
   btn.onclick = () => {
     showVideo(vid);
-    document.getElementById("menu").style.display = "none";
+    menu.style.display = "none";
   };
   document.body.appendChild(btn);
 });
 
-/* ===================== VIDEO 3 ===================== */
+/* ================= VIDEO 3 ================= */
 document.getElementById("video3").onended = () => {
   setTimeout(() => showVideo("video2"), voltarVideo3Delay * 1000);
 };
 
-const mapsLink = document.createElement("div");
-mapsLink.className = "hotspot";
-mapsLink.style.bottom = "20%";
-mapsLink.style.left = "50%";
-mapsLink.style.transform = "translateX(-50%)";
-mapsLink.style.width = "200px";
-mapsLink.style.height = "60px";
-mapsLink.onclick = () => {
+const maps = document.createElement("div");
+maps.className = "hotspot";
+maps.style.bottom = "20%";
+maps.style.left = "50%";
+maps.style.transform = "translateX(-50%)";
+maps.style.width = "220px";
+maps.style.height = "60px";
+maps.onclick = () =>
   window.open("https://maps.app.goo.gl/AZBjKdxYEqVsC6N38");
-};
-document.body.appendChild(mapsLink);
+document.body.appendChild(maps);
 
-/* ===================== VIDEO 4 ===================== */
+/* ================= VIDEO 4 ================= */
 function updateCountdown() {
   const now = new Date();
   const diff = eventoData - now;
@@ -237,25 +235,24 @@ function updateCountdown() {
   const m = Math.floor((diff % 3600000) / 60000);
   const s = Math.floor((diff % 60000) / 1000);
 
-  document.getElementById("countNumbers").innerText =
-    `${d} ${h} ${m} ${s}`;
+  document.getElementById("countdown").innerHTML =
+    `<div style="font-size:42px">${d} ${h} ${m} ${s}</div>
+     <div style="margin-top:8px">DIAS&nbsp;&nbsp;HORAS&nbsp;&nbsp;MIN&nbsp;&nbsp;SEG</div>`;
 }
-
 setInterval(updateCountdown, 1000);
 
 const confirma = document.createElement("div");
 confirma.className = "hotspot";
-confirma.style.width = "220px";
+confirma.style.width = "240px";
 confirma.style.height = "80px";
 confirma.style.top = "50%";
 confirma.style.left = "50%";
 confirma.style.transform = "translate(-50%,-50%)";
-confirma.onclick = () => {
+confirma.onclick = () =>
   window.open("https://forms.gle/gCTygBPyy5mx22aZA");
-};
 document.body.appendChild(confirma);
 
-/* ===================== VIDEO 5 ===================== */
+/* ================= VIDEO 5 ================= */
 const voltar5 = document.createElement("div");
 voltar5.className = "hotspot";
 voltar5.style.top = "20px";
@@ -264,7 +261,7 @@ voltar5.style.width = "60px";
 voltar5.style.height = "60px";
 voltar5.onclick = () => showVideo("video2");
 document.body.appendChild(voltar5);
-
 </script>
+
 </body>
 </html>
