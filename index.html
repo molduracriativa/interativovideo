@@ -6,205 +6,202 @@
 <title>Convite Interativo</title>
 
 <style>
-html, body {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  height: 100%;
-  background: #000;
-  overflow: hidden;
-  font-family: Arial, sans-serif;
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#000}
+
+/* ===== VÍDEO ===== */
+#video{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index:1;
 }
 
-video {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* ===== ÁUDIO ===== */
+#audio{display:none}
+
+/* ===== RODAPÉ VÍDEO 1 ===== */
+#footerInvite{
+  position:absolute;
+  bottom:6%;
+  width:100%;
+  text-align:center;
+  color:#fff;
+  font-family:Arial,sans-serif;
+  z-index:5;
+}
+#footerInvite span{
+  display:block;
+  margin-top:6px;
+  font-size:18px;
 }
 
-/* Hotspots invisíveis */
-.hotspot {
-  position: absolute;
-  background: rgba(255, 0, 0, 0.0);
+/* ===== DEBUG ===== */
+.debug{
+  background:rgba(255,0,0,.35);
 }
 
-/* Hotspots de DEBUG (menu) */
-.hotspot-debug {
-  position: absolute;
-  background: rgba(255, 0, 0, 0.35);
+/* ===== CLIQUE VIDEO 1 ===== */
+#video1Click{
+  position:absolute;
+  inset:0;
+  z-index:10;
 }
 
-/* Texto Vídeo 1 */
-#footerVideo1 {
-  position: absolute;
-  bottom: 6%;
-  width: 100%;
-  text-align: center;
-  color: #fff;
-  line-height: 1.4;
-  pointer-events: none;
+/* ===== CONTROLE SOM ===== */
+#audioControl{
+  position:absolute;
+  left:0;
+  top:50%;
+  transform:translateY(-50%);
+  width:80px;
+  height:80px;
+  z-index:20;
+  display:none;
 }
 
-#footerVideo1 .nome {
-  font-size: 18px;
-  font-weight: bold;
-  margin-bottom: 6px;
+/* ===== BOTÃO MENU ===== */
+#menuToggle{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+  width:120px;
+  height:80px;
+  z-index:20;
+  display:none;
 }
 
-#footerVideo1 .linha {
-  font-size: 15px;
+/* ===== MENU (CORRIGIDO) ===== */
+#menu{
+  position:absolute;
+  right:0;
+  top:50%;
+  transform:translateY(-50%);
+
+  width:260px;
+  height:360px;
+
+  background:url("media/menu.png") no-repeat right center;
+  background-size:contain;
+
+  display:none;
+  z-index:15;
 }
 
-/* Menu */
-#menu {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  display: none;
-  z-index: 10;
+/* ===== HOTSPOTS SOBRE BOTÕES ===== */
+.menu-hotspot{
+  position:absolute;
+  right:20px;
+  width:120px;
+  height:80px;
+  cursor:pointer;
 }
+
+/* POSIÇÕES EXATAS */
+#btn1{ top:60px; }
+#btn2{ top:155px; }
+#btn3{ top:250px; }
+
 </style>
 </head>
 
 <body>
 
+<video id="video" autoplay muted playsinline></video>
+<audio id="audio" src="media/audio.mp3" loop></audio>
+
+<!-- VIDEO 1 -->
+<div id="video1Click"></div>
+<div id="footerInvite"></div>
+
+<!-- VIDEO 2 -->
+<div id="audioControl" class="debug"></div>
+<div id="menuToggle" class="debug"></div>
+
+<div id="menu">
+  <div id="btn1" class="menu-hotspot debug" onclick="goVideo(3)"></div>
+  <div id="btn2" class="menu-hotspot debug" onclick="goVideo(4)"></div>
+  <div id="btn3" class="menu-hotspot debug" onclick="goVideo(5)"></div>
+</div>
+
 <script>
+/* ===== CONVIDADOS ===== */
 const convidados = [
-  "Drika","Andressa","Ramon","Myrtes","Thais",
-  "Marcela","Tatiane","Kelly","Katia","Aline"
+ "Drika","Andressa","Ramon","Myrtes","Thais",
+ "Marcela","Tatiane","Kelly","Katia","Aline"
 ];
-</script>
 
-<audio id="bgAudio" src="media/audio.mp3" loop></audio>
-
-<video id="video1" src="media/video1.mp4" autoplay muted playsinline></video>
-<video id="video2" src="media/video2.mp4" playsinline hidden></video>
-<video id="video3" src="media/video3.mp4" playsinline hidden></video>
-<video id="video4" src="media/video4.mp4" playsinline hidden></video>
-<video id="video5" src="media/video5.mp4" playsinline hidden></video>
-
-<!-- TEXTO VIDEO 1 -->
-<div id="footerVideo1">
-  <div class="nome" id="nomeConvidado"></div>
-  <div class="linha">Este convite foi preparado</div>
-  <div class="linha">especialmente para você.</div>
-</div>
-
-<img id="menu" src="media/menu.png">
-
-<div style="display:none" aria-hidden="true">
-© 2026 Cristiane Oliveira – Todos os direitos reservados.
-</div>
-
-<script>
-/* ================= CONTROLE ================= */
-const videos = document.querySelectorAll("video");
-const audio = document.getElementById("bgAudio");
+/* ===== ELEMENTOS ===== */
+const video = document.getElementById("video");
+const audio = document.getElementById("audio");
+const footer = document.getElementById("footerInvite");
+const clickV1 = document.getElementById("video1Click");
+const audioCtrl = document.getElementById("audioControl");
+const menuToggle = document.getElementById("menuToggle");
 const menu = document.getElementById("menu");
-let currentVideo = "video1";
 
-function showVideo(id) {
-  videos.forEach(v => {
-    v.pause();
-    v.hidden = true;
-  });
+/* ===== ESTADO ===== */
+let currentVideo = 1;
 
-  document.getElementById("footerVideo1").style.display =
-    id === "video1" ? "block" : "none";
+/* ===== INIT ===== */
+loadVideo(1);
 
-  currentVideo = id;
-
-  const video = document.getElementById(id);
-  video.hidden = false;
-  video.currentTime = 0;
+/* ===== FUNÇÕES ===== */
+function loadVideo(n){
+  currentVideo = n;
+  video.src = `media/video${n}.mp4`;
+  video.load();
   video.play();
 
-  if (id !== "video2") {
-    menu.style.display = "none";
-    menuContainer.style.display = "none";
+  footer.style.display = n === 1 ? "block" : "none";
+  clickV1.style.display = n === 1 ? "block" : "none";
+  audioCtrl.style.display = n === 2 ? "block" : "none";
+  menuToggle.style.display = n === 2 ? "block" : "none";
+  menu.style.display = "none";
+
+  if(n === 1) showInvite();
+}
+
+/* ===== VIDEO 1 ===== */
+clickV1.onclick = ()=>{
+  audio.play();
+  loadVideo(2);
+};
+
+function showInvite(){
+  const params = new URLSearchParams(window.location.search);
+  const nome = params.get("nome");
+  if(nome && convidados.includes(nome)){
+    footer.innerHTML = `<strong>${nome}</strong>
+    <span>Este convite foi preparado<br>especialmente para você</span>`;
   }
 }
 
-/* ================= VIDEO 1 ================= */
-window.onload = () => {
-  const nome = new URLSearchParams(location.search).get("nome");
-  document.getElementById("nomeConvidado").innerText =
-    convidados.includes(nome) ? nome : "Convidado Especial";
-};
-
-const cliqueVideo1 = document.createElement("div");
-cliqueVideo1.className = "hotspot";
-Object.assign(cliqueVideo1.style, { inset: 0 });
-
-cliqueVideo1.onclick = () => {
-  if (currentVideo !== "video1") return;
-  audio.volume = 0;
-  audio.play();
-  audio.volume = 1;
-  showVideo("video2");
-};
-document.body.appendChild(cliqueVideo1);
-
-/* ================= VIDEO 2 ================= */
-
-/* SOM – esquerda */
-const soundToggle = document.createElement("div");
-soundToggle.className = "hotspot";
-Object.assign(soundToggle.style, {
-  left: 0, top: 0, width: "60px", height: "100%"
-});
-soundToggle.onclick = () => {
-  if (currentVideo !== "video2") return;
+/* ===== SOM ===== */
+audioCtrl.onclick = (e)=>{
+  e.stopPropagation();
   audio.paused ? audio.play() : audio.pause();
 };
-document.body.appendChild(soundToggle);
 
-/* MENU TOGGLE – direita */
-const menuToggle = document.createElement("div");
-menuToggle.className = "hotspot";
-Object.assign(menuToggle.style, {
-  right: 0, top: 0, width: "60px", height: "100%"
-});
-menuToggle.onclick = () => {
-  if (currentVideo !== "video2") return;
-  const aberto = menu.style.display === "block";
-  menu.style.display = aberto ? "none" : "block";
-  menuContainer.style.display = aberto ? "none" : "block";
+/* ===== MENU ===== */
+menuToggle.onclick = (e)=>{
+  e.stopPropagation();
+  menu.style.display = menu.style.display === "block" ? "none" : "block";
 };
-document.body.appendChild(menuToggle);
 
-/* HOTSPOTS DO MENU (DEBUG VISÍVEL) */
-const menuContainer = document.createElement("div");
-Object.assign(menuContainer.style, {
-  position: "absolute",
-  right: "10px",
-  top: "50%",
-  transform: "translateY(-50%)",
-  display: "none",
-  zIndex: 20
-});
-document.body.appendChild(menuContainer);
-
-["video3", "video4", "video5"].forEach((vid, i) => {
-  const btn = document.createElement("div");
-  btn.className = "hotspot-debug";
-  Object.assign(btn.style, {
-    width: "120px",
-    height: "80px",
-    marginBottom: i < 2 ? "25px" : "0"
-  });
-
-  btn.onclick = () => {
-    if (currentVideo !== "video2") return;
-    showVideo(vid);
-  };
-
-  menuContainer.appendChild(btn);
-});
+/* ===== NAVEGAÇÃO ===== */
+function goVideo(n){
+  loadVideo(n);
+}
 </script>
+
+<!-- Proteção de autoria -->
+<div style="display:none" aria-hidden="true">
+© 2026 Cristiane Oliveira – Todos os direitos reservados.
+</div>
 
 </body>
 </html>
