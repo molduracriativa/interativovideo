@@ -25,13 +25,13 @@ video {
   object-fit: cover;
 }
 
-/* Hotspots invisíveis */
+/* Hotspot invisível */
 .hotspot {
   position: absolute;
   background: rgba(255, 0, 0, 0.0);
 }
 
-/* Rodapé Video 1 */
+/* Texto exclusivo do Vídeo 1 */
 #footerVideo1 {
   position: absolute;
   bottom: 6%;
@@ -51,30 +51,12 @@ video {
 #footerVideo1 .linha {
   font-size: 15px;
 }
-
-/* Menu */
-#menu {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  transform: translateY(-50%);
-  display: none;
-}
-
-/* Cronômetro */
-#countdown {
-  position: absolute;
-  top: 6%;
-  width: 100%;
-  text-align: center;
-  color: #fff;
-}
 </style>
 </head>
 
 <body>
 
-<!-- ================= CONVIDADOS ================= -->
+<!-- ================= LISTA FECHADA ================= -->
 <script>
 const convidados = [
   "Drika","Andressa","Ramon","Myrtes","Thais",
@@ -99,23 +81,16 @@ const convidados = [
   <div class="linha">especialmente para você.</div>
 </div>
 
-<!-- ================= MENU ================= -->
-<img id="menu" src="media/menu.png">
-
 <!-- ================= PROTEÇÃO ================= -->
 <div style="display:none" aria-hidden="true">
 © 2026 Cristiane Oliveira – Todos os direitos reservados.
 </div>
 
 <script>
-/* ================= CONFIG ================= */
-const voltarVideo3Delay = 6;
-const eventoData = new Date("2026-06-01T18:00:00");
-
+/* ================= CONTROLE ================= */
 const videos = document.querySelectorAll("video");
 const audio = document.getElementById("bgAudio");
 
-/* ================= FUNÇÕES ================= */
 function showVideo(id) {
   videos.forEach(v => {
     v.pause();
@@ -131,6 +106,7 @@ function showVideo(id) {
   video.play();
 }
 
+/* Fade suave do áudio */
 function fadeVolume(target, duration = 600) {
   const step = (target - audio.volume) / (duration / 50);
   const interval = setInterval(() => {
@@ -169,98 +145,6 @@ cliqueVideo1.onclick = () => {
 };
 
 document.body.appendChild(cliqueVideo1);
-
-/* ================= VIDEO 2 ================= */
-/* controle som */
-const soundToggle = document.createElement("div");
-soundToggle.className = "hotspot";
-soundToggle.style.left = 0;
-soundToggle.style.top = 0;
-soundToggle.style.width = "60px";
-soundToggle.style.height = "100%";
-soundToggle.onclick = () => audio.paused ? audio.play() : audio.pause();
-document.body.appendChild(soundToggle);
-
-/* menu toggle */
-const menuToggle = document.createElement("div");
-menuToggle.className = "hotspot";
-menuToggle.style.right = 0;
-menuToggle.style.top = 0;
-menuToggle.style.width = "60px";
-menuToggle.style.height = "100%";
-menuToggle.onclick = () => {
-  menu.style.display = menu.style.display === "none" ? "block" : "none";
-};
-document.body.appendChild(menuToggle);
-
-/* menu itens */
-["video3","video4","video5"].forEach((vid, i) => {
-  const btn = document.createElement("div");
-  btn.className = "hotspot";
-  btn.style.width = "60px";
-  btn.style.height = "60px";
-  btn.style.right = 0;
-  btn.style.top = `calc(50% + ${i * 85 - 85}px)`;
-  btn.onclick = () => {
-    showVideo(vid);
-    menu.style.display = "none";
-  };
-  document.body.appendChild(btn);
-});
-
-/* ================= VIDEO 3 ================= */
-document.getElementById("video3").onended = () => {
-  setTimeout(() => showVideo("video2"), voltarVideo3Delay * 1000);
-};
-
-const maps = document.createElement("div");
-maps.className = "hotspot";
-maps.style.bottom = "20%";
-maps.style.left = "50%";
-maps.style.transform = "translateX(-50%)";
-maps.style.width = "220px";
-maps.style.height = "60px";
-maps.onclick = () =>
-  window.open("https://maps.app.goo.gl/AZBjKdxYEqVsC6N38");
-document.body.appendChild(maps);
-
-/* ================= VIDEO 4 ================= */
-function updateCountdown() {
-  const now = new Date();
-  const diff = eventoData - now;
-  if (diff <= 0) return;
-
-  const d = Math.floor(diff / 86400000);
-  const h = Math.floor((diff % 86400000) / 3600000);
-  const m = Math.floor((diff % 3600000) / 60000);
-  const s = Math.floor((diff % 60000) / 1000);
-
-  document.getElementById("countdown").innerHTML =
-    `<div style="font-size:42px">${d} ${h} ${m} ${s}</div>
-     <div style="margin-top:8px">DIAS&nbsp;&nbsp;HORAS&nbsp;&nbsp;MIN&nbsp;&nbsp;SEG</div>`;
-}
-setInterval(updateCountdown, 1000);
-
-const confirma = document.createElement("div");
-confirma.className = "hotspot";
-confirma.style.width = "240px";
-confirma.style.height = "80px";
-confirma.style.top = "50%";
-confirma.style.left = "50%";
-confirma.style.transform = "translate(-50%,-50%)";
-confirma.onclick = () =>
-  window.open("https://forms.gle/gCTygBPyy5mx22aZA");
-document.body.appendChild(confirma);
-
-/* ================= VIDEO 5 ================= */
-const voltar5 = document.createElement("div");
-voltar5.className = "hotspot";
-voltar5.style.top = "20px";
-voltar5.style.right = "20px";
-voltar5.style.width = "60px";
-voltar5.style.height = "60px";
-voltar5.onclick = () => showVideo("video2");
-document.body.appendChild(voltar5);
 </script>
 
 </body>
