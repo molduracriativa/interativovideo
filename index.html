@@ -9,7 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#000}
 
-/* ===== VÍDEO ===== */
+/* ===== VIDEO ===== */
 #video{
   position:absolute;
   inset:0;
@@ -19,10 +19,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   z-index:1;
 }
 
-/* ===== ÁUDIO ===== */
+/* ===== AUDIO ===== */
 #audio{display:none}
 
-/* ===== TEXTO ===== */
+/* ===== TEXTO CONVIDADO ===== */
 #footerInvite{
   position:absolute;
   bottom:6%;
@@ -49,7 +49,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 /* ===== DEBUG ===== */
 .debug{background:rgba(255,0,0,.35)}
 
-/* ===== CLIQUE INICIAL ===== */
+/* ===== CLIQUE VIDEO 1 ===== */
 #video1Click{
   position:absolute;
   inset:0;
@@ -102,7 +102,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 #btn2{top:195px}
 #btn3{top:295px}
 
-/* ===== MAPS ===== */
+/* ===== MAPS VIDEO 3 ===== */
 #mapsHotspot{
   position:absolute;
   left:50%;
@@ -140,8 +140,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
    target="_blank"></a>
 
 <script>
-const retornoVideo2Offset = 8;
-const loopInicio = 7;
+/* ===== CONFIG ===== */
+const LOOP_START = 7; // tempo base (7s)
+let video2FirstPlay = true;
 
 const convidados = [
  "Drika","Andressa","Ramon","Myrtes","Thais",
@@ -158,17 +159,15 @@ const menu = document.getElementById("menu");
 const backBtn = document.getElementById("backToVideo2");
 const mapsHotspot = document.getElementById("mapsHotspot");
 
-let video2ReturnTime = 0;
-
-loadVideo(1);
-
+/* ===== RESET ===== */
 function resetVideoEvents(){
   video.onended = null;
   video.ontimeupdate = null;
   video.onloadedmetadata = null;
 }
 
-function loadVideo(n){
+/* ===== LOAD VIDEO ===== */
+function loadVideo(n, fromReturn=false){
   resetVideoEvents();
 
   video.src = `media/video${n}.mp4`;
@@ -176,39 +175,49 @@ function loadVideo(n){
   video.play();
 
   footer.classList.remove("show");
-  clickV1.style.display = n === 1 ? "block" : "none";
-  audioCtrl.style.display = n === 2 ? "block" : "none";
-  menuToggle.style.display = n === 2 ? "block" : "none";
+  clickV1.style.display = n===1 ? "block":"none";
+  audioCtrl.style.display = n===2 ? "block":"none";
+  menuToggle.style.display = n===2 ? "block":"none";
   menu.style.display = "none";
-  backBtn.style.display = n >= 3 ? "block" : "none";
-  mapsHotspot.style.display = n === 3 ? "block" : "none";
+  backBtn.style.display = n>=3 ? "block":"none";
+  mapsHotspot.style.display = n===3 ? "block":"none";
 
-  if(n === 1) showInviteWithDelay();
+  if(n===1) showInviteWithDelay();
 
-  /* ===== VÍDEO 2 (SEM AUTOMAÇÃO) ===== */
-  if(n === 2){
-    video.onloadedmetadata = ()=>{
-      video2ReturnTime = Math.max(0, video.duration - retornoVideo2Offset);
-    };
-    video.onended = ()=> video.pause();
+  /* ===== VIDEO 2 ===== */
+  if(n===2){
+    if(video2FirstPlay && !fromReturn){
+      video.onended = ()=> video.pause();
+      video2FirstPlay = false;
+    }else{
+      video.onloadedmetadata = ()=>{
+        video.currentTime = LOOP_START;
+      };
+      video.ontimeupdate = ()=>{
+        if(video.currentTime >= video.duration - 0.2){
+          video.currentTime = LOOP_START;
+        }
+      };
+    }
   }
 
-  /* ===== VÍDEOS 3,4,5 ===== */
-  if(n >= 3){
+  /* ===== VIDEOS 3,4,5 ===== */
+  if(n>=3){
     video.onloadedmetadata = ()=>{
-      video.currentTime = loopInicio;
-      video.play();
+      video.currentTime = LOOP_START;
     };
-
     video.ontimeupdate = ()=>{
       if(video.currentTime >= video.duration - 0.2){
-        video.currentTime = loopInicio;
+        video.currentTime = LOOP_START;
       }
     };
   }
 }
 
-/* ===== CLIQUE INICIAL ===== */
+/* ===== INICIO ===== */
+loadVideo(1);
+
+/* ===== CLIQUE VIDEO 1 ===== */
 clickV1.onclick = ()=>{
   audio.play();
   loadVideo(2);
@@ -235,28 +244,18 @@ audioCtrl.onclick = e=>{
 /* ===== MENU ===== */
 menuToggle.onclick = e=>{
   e.stopPropagation();
-  menu.style.display = menu.style.display === "block" ? "none" : "block";
+  menu.style.display = menu.style.display==="block"?"none":"block";
 };
 
 /* ===== RETORNO ===== */
 backBtn.onclick = ()=>{
-  loadVideo(2);
-  video.onloadedmetadata = ()=>{
-    video.currentTime = video2ReturnTime;
-    video.pause();
-  };
+  loadVideo(2,true);
 };
 
+/* ===== NAVEGAÇÃO ===== */
 function goVideo(n){
   loadVideo(n);
 }
-
-/* ===== PRELOAD ===== */
-[2,3,4,5].forEach(n=>{
-  const v=document.createElement("video");
-  v.src=`media/video${n}.mp4`;
-  v.preload="auto";
-});
 </script>
 
 </body>
