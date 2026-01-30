@@ -103,7 +103,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   pointer-events:none;
 }
 
-/* ===== HOTSPOTS ===== */
+/* ===== HOTSPOTS MENU ===== */
 .menu-hotspot{
   position:absolute;
   right:35px;
@@ -112,10 +112,22 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   cursor:pointer;
   pointer-events:auto;
 }
-
 #btn1{ top:95px; }
 #btn2{ top:195px; }
 #btn3{ top:295px; }
+
+/* ===== HOTSPOT MAPA (VÍDEO 3) ===== */
+#mapHotspot{
+  position:absolute;
+  bottom:500px;
+  left:50%;
+  transform:translateX(-50%);
+  width:260px;
+  height:90px;
+  z-index:20;
+  display:none;
+  cursor:pointer;
+}
 
 </style>
 </head>
@@ -138,8 +150,12 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   <div id="btn3" class="menu-hotspot debug" onclick="goVideo(5)"></div>
 </div>
 
+<!-- HOTSPOT MAPA -->
+<div id="mapHotspot" class="debug"></div>
+
 <script>
 const retornoVideo2Offset = 8;
+const mapaLink = "https://maps.app.goo.gl/AZBjKdxYEqVsC6N38";
 
 /* ===== CONVIDADOS ===== */
 const convidados = [
@@ -155,6 +171,7 @@ const audioCtrl = document.getElementById("audioControl");
 const menuToggle = document.getElementById("menuToggle");
 const menu = document.getElementById("menu");
 const backBtn = document.getElementById("backToVideo2");
+const mapHotspot = document.getElementById("mapHotspot");
 
 let video2ReturnTime = 0;
 
@@ -183,6 +200,7 @@ function loadVideo(n){
   menuToggle.style.display = n === 2 ? "block" : "none";
   menu.style.display = "none";
   backBtn.style.display = n >= 3 ? "block" : "none";
+  mapHotspot.style.display = n === 3 ? "block" : "none";
 
   if(n === 1) showInviteWithDelay();
 
@@ -199,7 +217,7 @@ clickV1.onclick = ()=>{
   loadVideo(2);
 };
 
-/* ===== TEXTO COM FADE / SLIDE ===== */
+/* ===== TEXTO COM FADE ===== */
 function showInviteWithDelay(){
   const nome = new URLSearchParams(window.location.search).get("nome");
   if(nome && convidados.includes(nome)){
@@ -230,6 +248,11 @@ backBtn.onclick = ()=>{
     video.currentTime = video2ReturnTime;
     video.pause();
   };
+};
+
+/* ===== MAPA ===== */
+mapHotspot.onclick = ()=>{
+  window.open(mapaLink, "_blank");
 };
 
 /* ===== NAVEGAÇÃO ===== */
