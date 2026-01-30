@@ -24,13 +24,19 @@ video {
   object-fit: cover;
 }
 
-/* ================= HOTSPOTS ================= */
+/* Hotspots invisíveis */
 .hotspot {
   position: absolute;
-  background: rgba(255, 0, 0, 0.3); /* 🔴 ATIVO PARA AJUSTE */
+  background: rgba(255, 0, 0, 0.0);
 }
 
-/* ================= TEXTO VIDEO 1 ================= */
+/* Hotspots de DEBUG (menu) */
+.hotspot-debug {
+  position: absolute;
+  background: rgba(255, 0, 0, 0.35);
+}
+
+/* Texto Vídeo 1 */
 #footerVideo1 {
   position: absolute;
   bottom: 6%;
@@ -51,7 +57,7 @@ video {
   font-size: 15px;
 }
 
-/* ================= MENU ================= */
+/* Menu */
 #menu {
   position: absolute;
   right: 0;
@@ -94,14 +100,12 @@ const convidados = [
 </div>
 
 <script>
-/* ================= CONTROLE GERAL ================= */
+/* ================= CONTROLE ================= */
 const videos = document.querySelectorAll("video");
 const audio = document.getElementById("bgAudio");
 const menu = document.getElementById("menu");
-
 let currentVideo = "video1";
 
-/* ================= FUNÇÕES ================= */
 function showVideo(id) {
   videos.forEach(v => {
     v.pause();
@@ -124,19 +128,6 @@ function showVideo(id) {
   }
 }
 
-/* Fade de áudio */
-function fadeVolume(target, duration = 600) {
-  const step = (target - audio.volume) / (duration / 50);
-  const i = setInterval(() => {
-    audio.volume += step;
-    if ((step > 0 && audio.volume >= target) ||
-        (step < 0 && audio.volume <= target)) {
-      audio.volume = target;
-      clearInterval(i);
-    }
-  }, 50);
-}
-
 /* ================= VIDEO 1 ================= */
 window.onload = () => {
   const nome = new URLSearchParams(location.search).get("nome");
@@ -145,51 +136,38 @@ window.onload = () => {
 };
 
 const cliqueVideo1 = document.createElement("div");
-Object.assign(cliqueVideo1.style, {
-  position: "absolute",
-  inset: 0
-});
 cliqueVideo1.className = "hotspot";
+Object.assign(cliqueVideo1.style, { inset: 0 });
 
 cliqueVideo1.onclick = () => {
   if (currentVideo !== "video1") return;
   audio.volume = 0;
   audio.play();
-  fadeVolume(1);
+  audio.volume = 1;
   showVideo("video2");
 };
 document.body.appendChild(cliqueVideo1);
 
 /* ================= VIDEO 2 ================= */
 
-/* CONTROLE SOM - ESQUERDA */
+/* SOM – esquerda */
 const soundToggle = document.createElement("div");
-Object.assign(soundToggle.style, {
-  position: "absolute",
-  left: 0,
-  top: 0,
-  width: "60px",
-  height: "100%"
-});
 soundToggle.className = "hotspot";
-
+Object.assign(soundToggle.style, {
+  left: 0, top: 0, width: "60px", height: "100%"
+});
 soundToggle.onclick = () => {
   if (currentVideo !== "video2") return;
   audio.paused ? audio.play() : audio.pause();
 };
 document.body.appendChild(soundToggle);
 
-/* MENU TOGGLE - DIREITA */
+/* MENU TOGGLE – direita */
 const menuToggle = document.createElement("div");
-Object.assign(menuToggle.style, {
-  position: "absolute",
-  right: 0,
-  top: 0,
-  width: "60px",
-  height: "100%"
-});
 menuToggle.className = "hotspot";
-
+Object.assign(menuToggle.style, {
+  right: 0, top: 0, width: "60px", height: "100%"
+});
 menuToggle.onclick = () => {
   if (currentVideo !== "video2") return;
   const aberto = menu.style.display === "block";
@@ -198,7 +176,7 @@ menuToggle.onclick = () => {
 };
 document.body.appendChild(menuToggle);
 
-/* HOTSPOTS DO MENU */
+/* HOTSPOTS DO MENU (DEBUG VISÍVEL) */
 const menuContainer = document.createElement("div");
 Object.assign(menuContainer.style, {
   position: "absolute",
@@ -212,7 +190,7 @@ document.body.appendChild(menuContainer);
 
 ["video3", "video4", "video5"].forEach((vid, i) => {
   const btn = document.createElement("div");
-  btn.className = "hotspot";
+  btn.className = "hotspot-debug";
   Object.assign(btn.style, {
     width: "120px",
     height: "80px",
