@@ -56,7 +56,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   z-index:10;
 }
 
-/* ===== CONTROLES TOPO ===== */
+/* ===== CONTROLES ===== */
 #audioControl{
   position:absolute;
   top:15px;
@@ -66,8 +66,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   z-index:20;
   display:none;
 }
-
-#menuToggle{
+#menuToggle,#backToVideo2{
   position:absolute;
   top:15px;
   right:15px;
@@ -77,18 +76,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   display:none;
 }
 
-/* ===== BOTÃO RETORNO ===== */
-#backToVideo2{
-  position:absolute;
-  top:15px;
-  right:15px;
-  width:120px;
-  height:80px;
-  z-index:20;
-  display:none;
-}
-
-/* ===== MENU LATERAL ===== */
+/* ===== MENU ===== */
 #menu{
   position:absolute;
   right:0;
@@ -102,8 +90,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   z-index:15;
   pointer-events:none;
 }
-
-/* ===== HOTSPOTS MENU ===== */
 .menu-hotspot{
   position:absolute;
   right:35px;
@@ -112,23 +98,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   cursor:pointer;
   pointer-events:auto;
 }
-#btn1{ top:95px; }
-#btn2{ top:195px; }
-#btn3{ top:295px; }
-
-/* ===== HOTSPOT MAPA (VÍDEO 3) ===== */
-#mapHotspot{
-  position:absolute;
-  bottom:500px;
-  left:50%;
-  transform:translateX(-50%);
-  width:260px;
-  height:90px;
-  z-index:20;
-  display:none;
-  cursor:pointer;
-}
-
+#btn1{ top:95px }
+#btn2{ top:195px }
+#btn3{ top:295px }
 </style>
 </head>
 
@@ -139,7 +111,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 
 <div id="video1Click"></div>
 <div id="footerInvite"></div>
-
 <div id="audioControl" class="debug"></div>
 <div id="menuToggle" class="debug"></div>
 <div id="backToVideo2" class="debug"></div>
@@ -150,14 +121,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   <div id="btn3" class="menu-hotspot debug" onclick="goVideo(5)"></div>
 </div>
 
-<!-- HOTSPOT MAPA -->
-<div id="mapHotspot" class="debug"></div>
-
 <script>
 const retornoVideo2Offset = 8;
-const mapaLink = "https://maps.app.goo.gl/AZBjKdxYEqVsC6N38";
+const retornoVideosExtras = 14; // <<< FRAME FIXO PARA 3,4,5
 
-/* ===== CONVIDADOS ===== */
 const convidados = [
  "Drika","Andressa","Ramon","Myrtes","Thais",
  "Marcela","Tatiane","Kelly","Katia","Aline"
@@ -171,26 +138,18 @@ const audioCtrl = document.getElementById("audioControl");
 const menuToggle = document.getElementById("menuToggle");
 const menu = document.getElementById("menu");
 const backBtn = document.getElementById("backToVideo2");
-const mapHotspot = document.getElementById("mapHotspot");
 
 let video2ReturnTime = 0;
+let currentVideo = 1;
 
 loadVideo(1);
 
-/* ===== LOAD VIDEO ===== */
 function loadVideo(n){
+  currentVideo = n;
   video.onended = null;
+  video.ontimeupdate = null;
+
   video.src = `media/video${n}.mp4`;
-
-  if(n === 1){
-    video.loop = true;
-  }else if(n === 2){
-    video.loop = false;
-    video.onended = ()=> video.pause();
-  }else{
-    video.loop = true;
-  }
-
   video.load();
   video.play();
 
@@ -200,24 +159,39 @@ function loadVideo(n){
   menuToggle.style.display = n === 2 ? "block" : "none";
   menu.style.display = "none";
   backBtn.style.display = n >= 3 ? "block" : "none";
-  mapHotspot.style.display = n === 3 ? "block" : "none";
 
   if(n === 1) showInviteWithDelay();
 
+  /* ===== VÍDEO 2 ===== */
   if(n === 2){
     video.onloadedmetadata = ()=>{
       video2ReturnTime = Math.max(0, video.duration - retornoVideo2Offset);
     };
+    video.onended = ()=> video.pause();
+  }
+
+  /* ===== VÍDEOS 3,4,5 ===== */
+  if(n >= 3){
+    video.onloadedmetadata = ()=>{
+      video.currentTime = retornoVideosExtras;
+      video.play();
+    };
+
+    video.ontimeupdate = ()=>{
+      if(video.currentTime >= video.duration - 0.3){
+        video.currentTime = retornoVideosExtras;
+      }
+    };
   }
 }
 
-/* ===== VÍDEO 1 CLICK ===== */
+/* ===== CLIQUE INICIAL ===== */
 clickV1.onclick = ()=>{
   audio.play();
   loadVideo(2);
 };
 
-/* ===== TEXTO COM FADE ===== */
+/* ===== TEXTO ===== */
 function showInviteWithDelay(){
   const nome = new URLSearchParams(window.location.search).get("nome");
   if(nome && convidados.includes(nome)){
@@ -250,20 +224,10 @@ backBtn.onclick = ()=>{
   };
 };
 
-/* ===== MAPA ===== */
-mapHotspot.onclick = ()=>{
-  window.open(mapaLink, "_blank");
-};
-
-/* ===== NAVEGAÇÃO ===== */
 function goVideo(n){
   loadVideo(n);
 }
 </script>
-
-<div style="display:none">
-© 2026 Cristiane Oliveira – Todos os direitos reservados.
-</div>
 
 </body>
 </html>
