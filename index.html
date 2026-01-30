@@ -31,7 +31,14 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   color:#fff;
   font-family:Arial,sans-serif;
   z-index:5;
-  display:none;
+  opacity:0;
+  transform:translateY(20px);
+  transition:opacity .8s ease, transform .8s ease;
+  pointer-events:none;
+}
+#footerInvite.show{
+  opacity:1;
+  transform:translateY(0);
 }
 #footerInvite span{
   display:block;
@@ -156,10 +163,8 @@ loadVideo(1);
 /* ===== LOAD VIDEO ===== */
 function loadVideo(n){
   video.onended = null;
-
   video.src = `media/video${n}.mp4`;
 
-  /* CONTROLE DE LOOP */
   if(n === 1){
     video.loop = true;
   }else if(n === 2){
@@ -172,7 +177,7 @@ function loadVideo(n){
   video.load();
   video.play();
 
-  footer.style.display = "none";
+  footer.classList.remove("show");
   clickV1.style.display = n === 1 ? "block" : "none";
   audioCtrl.style.display = n === 2 ? "block" : "none";
   menuToggle.style.display = n === 2 ? "block" : "none";
@@ -194,15 +199,15 @@ clickV1.onclick = ()=>{
   loadVideo(2);
 };
 
-/* ===== TEXTO COM DELAY ===== */
+/* ===== TEXTO COM FADE / SLIDE ===== */
 function showInviteWithDelay(){
   const nome = new URLSearchParams(window.location.search).get("nome");
   if(nome && convidados.includes(nome)){
     setTimeout(()=>{
       footer.innerHTML = `<strong>${nome},</strong>
       <span>Este convite foi preparado<br>especialmente para você</span>`;
-      footer.style.display = "block";
-    }, 1000);
+      footer.classList.add("show");
+    },1000);
   }
 }
 
@@ -223,6 +228,7 @@ backBtn.onclick = ()=>{
   loadVideo(2);
   video.onloadedmetadata = ()=>{
     video.currentTime = video2ReturnTime;
+    video.pause();
   };
 };
 
