@@ -22,7 +22,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 /* ===== ÁUDIO ===== */
 #audio{display:none}
 
-/* ===== TEXTO ===== */
+/* ===== TEXTO CONVIDADO ===== */
 #footerInvite{
   position:absolute;
   bottom:6%;
@@ -33,7 +33,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   z-index:5;
   opacity:0;
   transform:translateY(20px);
-  transition:.8s;
+  transition:opacity .8s ease, transform .8s ease;
   pointer-events:none;
 }
 #footerInvite.show{
@@ -49,7 +49,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 /* ===== DEBUG ===== */
 .debug{background:rgba(255,0,0,.35)}
 
-/* ===== CLIQUE INICIAL ===== */
+/* ===== CLIQUE VÍDEO 1 ===== */
 #video1Click{
   position:absolute;
   inset:0;
@@ -57,16 +57,24 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 }
 
 /* ===== CONTROLES ===== */
-#audioControl,#menuToggle,#backToVideo2{
+#audioControl{
   position:absolute;
   top:15px;
-  width:100px;
+  left:15px;
+  width:80px;
   height:80px;
   z-index:20;
   display:none;
 }
-#audioControl{left:15px}
-#menuToggle,#backToVideo2{right:15px}
+#menuToggle,#backToVideo2{
+  position:absolute;
+  top:15px;
+  right:15px;
+  width:120px;
+  height:80px;
+  z-index:20;
+  display:none;
+}
 
 /* ===== MENU ===== */
 #menu{
@@ -94,11 +102,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 #btn2{top:195px}
 #btn3{top:295px}
 
-/* ===== MAPS VIDEO 3 ===== */
+/* ===== HOTSPOT MAPS (VÍDEO 3) ===== */
 #mapsHotspot{
   position:absolute;
   left:50%;
-  bottom:500px;
+  bottom:300px; /* <<< ajuste fino aqui se quiser */
   transform:translateX(-50%);
   width:320px;
   height:120px;
@@ -110,8 +118,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 
 <body>
 
-<video id="video" autoplay muted playsinline></video>
-<audio id="audio" src="media/audio.mp3" loop></audio>
+<video id="video" autoplay muted playsinline preload="auto"></video>
+<audio id="audio" src="media/audio.mp3" loop preload="auto"></audio>
 
 <div id="video1Click"></div>
 <div id="footerInvite"></div>
@@ -132,14 +140,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
    target="_blank"></a>
 
 <script>
+/* ===== CONFIGURAÇÕES ===== */
 const retornoVideo2Offset = 8;
-const loopInicio = 6; // <<< PONTO CORRETO DO LOOP
+const loopInicio = 6; // <<< vídeos 3,4,5 começam loop após 6s
 
+/* ===== CONVIDADOS ===== */
 const convidados = [
  "Drika","Andressa","Ramon","Myrtes","Thais",
  "Marcela","Tatiane","Kelly","Katia","Aline"
 ];
 
+/* ===== ELEMENTOS ===== */
 const video = document.getElementById("video");
 const audio = document.getElementById("audio");
 const footer = document.getElementById("footerInvite");
@@ -154,6 +165,7 @@ let video2ReturnTime = 0;
 
 loadVideo(1);
 
+/* ===== LOAD VIDEO ===== */
 function loadVideo(n){
   video.onended = null;
   video.ontimeupdate = null;
@@ -203,7 +215,7 @@ clickV1.onclick = ()=>{
   loadVideo(2);
 };
 
-/* ===== TEXTO ===== */
+/* ===== TEXTO COM ANIMAÇÃO ===== */
 function showInviteWithDelay(){
   const nome = new URLSearchParams(location.search).get("nome");
   if(nome && convidados.includes(nome)){
@@ -239,7 +251,18 @@ backBtn.onclick = ()=>{
 function goVideo(n){
   loadVideo(n);
 }
+
+/* ===== PRELOAD EXTRA (ACELERA NO GITHUB) ===== */
+[2,3,4,5].forEach(n=>{
+  const v = document.createElement("video");
+  v.src = `media/video${n}.mp4`;
+  v.preload = "auto";
+});
 </script>
+
+<div style="display:none">
+© 2026 Cristiane Oliveira – Todos os direitos reservados.
+</div>
 
 </body>
 </html>
