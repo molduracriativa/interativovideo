@@ -111,26 +111,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   display:none;
 }
 
-/* ===== CRONÔMETRO VIDEO 4 ===== */
-#countdown{
-  position:absolute;
-  left:50%;
-  bottom:200px;
-  transform:translateX(-50%);
-  display:none;
-  z-index:20;
-  color:#fff;
-  font-family:Arial,sans-serif;
-}
-.count-grid{
-  display:flex;
-  gap:14px;
-  text-align:center;
-}
-.count-box{min-width:70px}
-.count-num{font-size:28px;font-weight:bold}
-.count-label{font-size:12px;margin-top:4px}
-
 /* ===== FORM VIDEO 4 ===== */
 #formHotspot{
   position:absolute;
@@ -143,7 +123,23 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   display:none;
 }
 
-/* ===== TRANSIÇÃO ICON ===== */
+/* ===== CRONÔMETRO VIDEO 4 ===== */
+#countdown{
+  position:absolute;
+  left:50%;
+  bottom:200px;
+  transform:translateX(-50%);
+  display:none;
+  z-index:20;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+.count-grid{display:flex;gap:14px;text-align:center}
+.count-box{min-width:70px}
+.count-num{font-size:28px;font-weight:bold}
+.count-label{font-size:12px;margin-top:4px}
+
+/* ===== TRANSIÇÃO ===== */
 #transition{
   position:absolute;
   inset:0;
@@ -187,12 +183,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 <a id="mapsHotspot" href="https://maps.app.goo.gl/AZBjKdxYEqVsC6N38" target="_blank"></a>
 <a id="formHotspot" href="https://forms.gle/gCTygBPyy5mx22aZA" target="_blank"></a>
 
-<!-- TRANSIÇÃO -->
 <div id="transition">
   <img src="media/icon.png">
 </div>
 
-<!-- CRONÔMETRO -->
 <div id="countdown">
   <div class="count-grid">
     <div class="count-box"><div class="count-num" id="d">00</div><div class="count-label">Dias</div></div>
@@ -203,16 +197,13 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 </div>
 
 <script>
-/* ===== CONFIG ===== */
 const LOOP_START = 7;
 const EVENT_DATE = "2026-08-20T18:00:00";
 let video2FirstPlay = true;
 let countdownInterval;
+let preloaded = false;
 
-const convidados=[
- "Drika","Andressa","Ramon","Myrtes","Thais",
- "Marcela","Tatiane","Kelly","Katia","Aline"
-];
+const convidados=["Drika","Andressa","Ramon","Myrtes","Thais","Marcela","Tatiane","Kelly","Katia","Aline"];
 
 const video=document.getElementById("video");
 const audio=document.getElementById("audio");
@@ -227,7 +218,18 @@ const countdown=document.getElementById("countdown");
 const formHotspot=document.getElementById("formHotspot");
 const transition=document.getElementById("transition");
 
-/* ===== RESET ===== */
+function preloadNextVideos(){
+  if(preloaded) return;
+  preloaded = true;
+  [3,4,5].forEach(n=>{
+    const v=document.createElement("video");
+    v.src=`media/video${n}.mp4`;
+    v.preload="auto";
+    v.muted=true;
+    v.playsInline=true;
+  });
+}
+
 function resetVideoEvents(){
   video.onended=null;
   video.ontimeupdate=null;
@@ -235,10 +237,8 @@ function resetVideoEvents(){
   clearInterval(countdownInterval);
 }
 
-/* ===== LOAD VIDEO ===== */
 function loadVideo(n,fromReturn=false){
   resetVideoEvents();
-
   video.src=`media/video${n}.mp4`;
   video.load();
   video.play();
@@ -256,8 +256,9 @@ function loadVideo(n,fromReturn=false){
   if(n===1) showInviteWithDelay();
   if(n===4) startCountdown();
 
-  /* VIDEO 2 */
   if(n===2){
+    preloadNextVideos();
+
     if(video2FirstPlay && !fromReturn){
       video.onended=()=>video.pause();
       video2FirstPlay=false;
@@ -271,7 +272,6 @@ function loadVideo(n,fromReturn=false){
     }
   }
 
-  /* VIDEOS 3,4,5 */
   if(n>=3){
     video.onended=()=>{
       video.currentTime=0;
@@ -280,7 +280,6 @@ function loadVideo(n,fromReturn=false){
   }
 }
 
-/* ===== TRANSIÇÃO ===== */
 function goVideoWithTransition(n){
   transition.style.display="flex";
   const img=transition.firstElementChild;
@@ -294,7 +293,6 @@ function goVideoWithTransition(n){
   },900);
 }
 
-/* ===== CRONÔMETRO ===== */
 function startCountdown(){
   const target=new Date(EVENT_DATE).getTime();
   countdownInterval=setInterval(()=>{
@@ -307,33 +305,34 @@ function startCountdown(){
   },1000);
 }
 
-/* ===== TEXTO CONVIDADO ===== */
 function showInviteWithDelay(){
   const nome=new URLSearchParams(location.search).get("nome");
   if(nome && convidados.includes(nome)){
     setTimeout(()=>{
-      footer.innerHTML=`<strong>${nome},</strong>
-      <span>Este convite foi preparado<br>especialmente para você</span>`;
+      footer.innerHTML=`<strong>${nome},</strong><span>Este convite foi preparado<br>especialmente para você</span>`;
       footer.classList.add("show");
     },1000);
   }
 }
 
-/* ===== EVENTOS ===== */
-clickV1.onclick=()=>{audio.play();loadVideo(2)};
-menuToggle.onclick=e=>{
-  e.stopPropagation();
-  menu.style.display=menu.style.display==="block"?"none":"block";
+/* ===== CONTROLE DE SOM ===== */
+clickV1.onclick=()=>{
+  audio.play();
+  loadVideo(2);
 };
-backBtn.onclick=()=>loadVideo(2,true);
 
-/* ===== CONTROLE DE SOM (CORRIGIDO) ===== */
 audioCtrl.onclick=e=>{
   e.stopPropagation();
   audio.paused ? audio.play() : audio.pause();
 };
 
-/* ===== START ===== */
+menuToggle.onclick=e=>{
+  e.stopPropagation();
+  menu.style.display=menu.style.display==="block"?"none":"block";
+};
+
+backBtn.onclick=()=>loadVideo(2,true);
+
 loadVideo(1);
 </script>
 
