@@ -113,6 +113,34 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   z-index:20;
   display:none;
 }
+
+/* ===== CRONÔMETRO VIDEO 4 ===== */
+#countdown{
+  position:absolute;
+  left:50%;
+  bottom:200px;
+  transform:translateX(-50%);
+  display:none;
+  z-index:20;
+  color:#fff;
+  font-family:Arial,sans-serif;
+}
+.count-grid{
+  display:flex;
+  gap:14px;
+  text-align:center;
+}
+.count-box{
+  min-width:70px;
+}
+.count-num{
+  font-size:28px;
+  font-weight:bold;
+}
+.count-label{
+  font-size:12px;
+  margin-top:4px;
+}
 </style>
 </head>
 
@@ -139,10 +167,34 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
    href="https://maps.app.goo.gl/AZBjKdxYEqVsC6N38"
    target="_blank"></a>
 
+<!-- CRONÔMETRO -->
+<div id="countdown">
+  <div class="count-grid">
+    <div class="count-box">
+      <div class="count-num" id="d">00</div>
+      <div class="count-label">Dias</div>
+    </div>
+    <div class="count-box">
+      <div class="count-num" id="h">00</div>
+      <div class="count-label">Horas</div>
+    </div>
+    <div class="count-box">
+      <div class="count-num" id="m">00</div>
+      <div class="count-label">Min</div>
+    </div>
+    <div class="count-box">
+      <div class="count-num" id="s">00</div>
+      <div class="count-label">Seg</div>
+    </div>
+  </div>
+</div>
+
 <script>
 /* ===== CONFIG ===== */
-const LOOP_START = 7;
+const LOOP_START = 11;
+const EVENT_DATE = "2026-08-20T18:00:00";
 let video2FirstPlay = true;
+let countdownInterval;
 
 const convidados = [
  "Drika","Andressa","Ramon","Myrtes","Thais",
@@ -158,12 +210,14 @@ const menuToggle = document.getElementById("menuToggle");
 const menu = document.getElementById("menu");
 const backBtn = document.getElementById("backToVideo2");
 const mapsHotspot = document.getElementById("mapsHotspot");
+const countdown = document.getElementById("countdown");
 
 /* ===== RESET ===== */
 function resetVideoEvents(){
   video.onended = null;
   video.ontimeupdate = null;
   video.onloadedmetadata = null;
+  clearInterval(countdownInterval);
 }
 
 /* ===== LOAD VIDEO ===== */
@@ -181,8 +235,11 @@ function loadVideo(n, fromReturn=false){
   menu.style.display = "none";
   backBtn.style.display = n>=3 ? "block":"none";
   mapsHotspot.style.display = n===3 ? "block":"none";
+  countdown.style.display = n===4 ? "block":"none";
 
   if(n===1) showInviteWithDelay();
+
+  if(n===4) startCountdown();
 
   /* ===== VIDEO 2 ===== */
   if(n===2){
@@ -201,13 +258,35 @@ function loadVideo(n, fromReturn=false){
     }
   }
 
-  /* ===== VIDEOS 3,4,5 (CORRIGIDO) ===== */
+  /* ===== VIDEOS 3,4,5 ===== */
   if(n>=3){
     video.onended = ()=>{
       video.currentTime = 0;
       video.play();
     };
   }
+}
+
+/* ===== CRONÔMETRO ===== */
+function startCountdown(){
+  const target = new Date(EVENT_DATE).getTime();
+
+  countdownInterval = setInterval(()=>{
+    const now = Date.now();
+    const diff = target - now;
+
+    if(diff <= 0) return;
+
+    const d = Math.floor(diff / (1000*60*60*24));
+    const h = Math.floor((diff / (1000*60*60)) % 24);
+    const m = Math.floor((diff / (1000*60)) % 60);
+    const s = Math.floor((diff / 1000) % 60);
+
+    document.getElementById("d").textContent = String(d).padStart(2,"0");
+    document.getElementById("h").textContent = String(h).padStart(2,"0");
+    document.getElementById("m").textContent = String(m).padStart(2,"0");
+    document.getElementById("s").textContent = String(s).padStart(2,"0");
+  },1000);
 }
 
 /* ===== INICIO ===== */
