@@ -334,6 +334,28 @@ menuToggle.onclick=e=>{
 backBtn.onclick=()=>loadVideo(2,true);
 
 loadVideo(1);
+</script<div style="display: none !important; visibility: hidden; pointer-events: none;" aria-hidden="true">
+    © 2026 Cristiane Oliveira. Todos os direitos reservados. 
+    Este software, design e algoritmos estão protegidos pela Lei de Direitos Autorais (Lei nº 9.610/98). 
+</div>
+
+<script>
+    (function() {
+        document.addEventListener('contextmenu', e => e.preventDefault());
+        document.addEventListener('keydown', function(e) {
+            if (
+                e.keyCode == 123 || 
+                (e.ctrlKey && e.keyCode == 85) || 
+                (e.ctrlKey && e.shiftKey && e.keyCode == 73) || 
+                (e.ctrlKey && e.keyCode == 67) || 
+                (e.ctrlKey && e.keyCode == 83)
+            ) {
+                e.preventDefault();
+                return false;
+            }
+        });
+        console.log("%c Protegido pela Lei 9.610/98 - Autoria: Cristiane Oliveira ", "color: white; background: red; font-weight: bold;");
+    })();
 </script>
 
 </body>
