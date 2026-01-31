@@ -5,23 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Convite Interativo</title>
 
-<!-- ===== CAPA DO LINK (WHATSAPP / FACEBOOK) ===== -->
 <meta property="og:type" content="website">
 <meta property="og:title" content="Convite Interativo">
 <meta property="og:description" content="Você recebeu um convite especial. Toque para abrir e viver essa experiência.">
-<meta property="og:image" content="https://molduracriativa.github.io/interativovideo/media/capalink.png">
-<meta property="og:image:width" content="1080">
-<meta property="og:image:height" content="1080">
 <meta property="og:url" content="https://molduracriativa.github.io/interativovideo/">
+
+<meta property="og:image" content="https://molduracriativa.github.io/interativovideo/media/capalink.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://molduracriativa.github.io/interativovideo/media/capalink.png">
 
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-html,body{width:100%;height:100%;overflow:hidden;background:#000}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;display:flex;justify-content:center;align-items:center}
 
-/* ===== VIDEO ===== */
+/* ===== VIDEO CENTRALIZADO ===== */
 #video{
   position:absolute;
   inset:0;
@@ -34,23 +37,25 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 /* ===== AUDIO ===== */
 #audio{display:none}
 
-/* ===== TEXTO CONVIDADO ===== */
+/* ===== TEXTO CONVIDADO CENTRALIZADO ===== */
 #footerInvite{
   position:absolute;
   bottom:6%;
   width:100%;
+  max-width:500px; /* Limita largura para não quebrar em telas largas */
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
   text-align:center;
   color:#fff;
   font-family:Arial,sans-serif;
   z-index:5;
   opacity:0;
-  transform:translateY(20px);
   transition:.8s;
   pointer-events:none;
 }
 #footerInvite.show{
   opacity:1;
-  transform:translateY(0);
+  transform:translateX(-50%) translateY(0);
 }
 #footerInvite span{
   display:block;
@@ -135,7 +140,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   display:none;
 }
 
-/* ===== CRONÔMETRO VIDEO 4 ===== */
+/* ===== CRONÔMETRO VIDEO 4 CENTRALIZADO ===== */
 #countdown{
   position:absolute;
   left:50%;
@@ -146,7 +151,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   color:#fff;
   font-family:Arial,sans-serif;
 }
-.count-grid{display:flex;gap:14px;text-align:center}
+.count-grid{display:flex;gap:14px;text-align:center;justify-content:center}
 .count-box{min-width:70px}
 .count-num{font-size:28px;font-weight:bold}
 .count-label{font-size:12px;margin-top:4px}
@@ -230,6 +235,11 @@ const countdown=document.getElementById("countdown");
 const formHotspot=document.getElementById("formHotspot");
 const transition=document.getElementById("transition");
 
+const d=document.getElementById("d");
+const h=document.getElementById("h");
+const m=document.getElementById("m");
+const s=document.getElementById("s");
+
 function preloadNextVideos(){
   if(preloaded) return;
   preloaded = true;
@@ -309,7 +319,10 @@ function startCountdown(){
   const target=new Date(EVENT_DATE).getTime();
   countdownInterval=setInterval(()=>{
     const diff=target-Date.now();
-    if(diff<=0)return;
+    if(diff<=0){
+      clearInterval(countdownInterval);
+      return;
+    }
     d.textContent=String(Math.floor(diff/86400000)).padStart(2,"0");
     h.textContent=String(Math.floor(diff/3600000)%24).padStart(2,"0");
     m.textContent=String(Math.floor(diff/60000)%60).padStart(2,"0");
@@ -327,7 +340,6 @@ function showInviteWithDelay(){
   }
 }
 
-/* ===== CONTROLE DE SOM (ORIGINAL) ===== */
 clickV1.onclick=()=>{
   audio.play();
   loadVideo(2);
