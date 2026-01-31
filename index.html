@@ -114,11 +114,23 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   display:none;
 }
 
+/* ===== FORM VIDEO 4 ===== */
+#formHotspot{
+  position:absolute;
+  left:50%;
+  bottom:120px;
+  transform:translateX(-50%);
+  width:340px;
+  height:110px;
+  z-index:20;
+  display:none;
+}
+
 /* ===== CRONÔMETRO VIDEO 4 ===== */
 #countdown{
   position:absolute;
   left:50%;
-  bottom:200px;
+  bottom:260px;
   transform:translateX(-50%);
   display:none;
   z-index:20;
@@ -130,17 +142,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   gap:14px;
   text-align:center;
 }
-.count-box{
-  min-width:70px;
-}
-.count-num{
-  font-size:28px;
-  font-weight:bold;
-}
-.count-label{
-  font-size:12px;
-  margin-top:4px;
-}
+.count-box{min-width:70px}
+.count-num{font-size:28px;font-weight:bold}
+.count-label{font-size:12px;margin-top:4px}
 </style>
 </head>
 
@@ -167,6 +171,11 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
    href="https://maps.app.goo.gl/AZBjKdxYEqVsC6N38"
    target="_blank"></a>
 
+<a id="formHotspot"
+   class="debug"
+   href="https://forms.gle/gCTygBPyy5mx22aZA"
+   target="_blank"></a>
+
 <!-- CRONÔMETRO -->
 <div id="countdown">
   <div class="count-grid">
@@ -190,7 +199,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 </div>
 
 <script>
-/* ===== CONFIG ===== */
 const LOOP_START = 7;
 const EVENT_DATE = "2026-08-20T18:00:00";
 let video2FirstPlay = true;
@@ -210,9 +218,9 @@ const menuToggle = document.getElementById("menuToggle");
 const menu = document.getElementById("menu");
 const backBtn = document.getElementById("backToVideo2");
 const mapsHotspot = document.getElementById("mapsHotspot");
+const formHotspot = document.getElementById("formHotspot");
 const countdown = document.getElementById("countdown");
 
-/* ===== RESET ===== */
 function resetVideoEvents(){
   video.onended = null;
   video.ontimeupdate = null;
@@ -220,7 +228,6 @@ function resetVideoEvents(){
   clearInterval(countdownInterval);
 }
 
-/* ===== LOAD VIDEO ===== */
 function loadVideo(n, fromReturn=false){
   resetVideoEvents();
 
@@ -234,22 +241,20 @@ function loadVideo(n, fromReturn=false){
   menuToggle.style.display = n===2 ? "block":"none";
   menu.style.display = "none";
   backBtn.style.display = n>=3 ? "block":"none";
+
   mapsHotspot.style.display = n===3 ? "block":"none";
   countdown.style.display = n===4 ? "block":"none";
+  formHotspot.style.display = n===4 ? "block":"none";
 
   if(n===1) showInviteWithDelay();
-
   if(n===4) startCountdown();
 
-  /* ===== VIDEO 2 ===== */
   if(n===2){
     if(video2FirstPlay && !fromReturn){
       video.onended = ()=> video.pause();
       video2FirstPlay = false;
     }else{
-      video.onloadedmetadata = ()=>{
-        video.currentTime = LOOP_START;
-      };
+      video.onloadedmetadata = ()=> video.currentTime = LOOP_START;
       video.ontimeupdate = ()=>{
         if(video.currentTime >= video.duration - 0.2){
           video.currentTime = LOOP_START;
@@ -258,7 +263,6 @@ function loadVideo(n, fromReturn=false){
     }
   }
 
-  /* ===== VIDEOS 3,4,5 ===== */
   if(n>=3){
     video.onended = ()=>{
       video.currentTime = 0;
@@ -267,38 +271,25 @@ function loadVideo(n, fromReturn=false){
   }
 }
 
-/* ===== CRONÔMETRO ===== */
 function startCountdown(){
   const target = new Date(EVENT_DATE).getTime();
-
   countdownInterval = setInterval(()=>{
-    const now = Date.now();
-    const diff = target - now;
-
-    if(diff <= 0) return;
-
-    const d = Math.floor(diff / (1000*60*60*24));
-    const h = Math.floor((diff / (1000*60*60)) % 24);
-    const m = Math.floor((diff / (1000*60)) % 60);
-    const s = Math.floor((diff / 1000) % 60);
-
-    document.getElementById("d").textContent = String(d).padStart(2,"0");
-    document.getElementById("h").textContent = String(h).padStart(2,"0");
-    document.getElementById("m").textContent = String(m).padStart(2,"0");
-    document.getElementById("s").textContent = String(s).padStart(2,"0");
+    const diff = target - Date.now();
+    if(diff<=0) return;
+    d.textContent = String(Math.floor(diff/86400000)).padStart(2,"0");
+    h.textContent = String(Math.floor(diff/3600000)%24).padStart(2,"0");
+    m.textContent = String(Math.floor(diff/60000)%60).padStart(2,"0");
+    s.textContent = String(Math.floor(diff/1000)%60).padStart(2,"0");
   },1000);
 }
 
-/* ===== INICIO ===== */
 loadVideo(1);
 
-/* ===== CLIQUE VIDEO 1 ===== */
 clickV1.onclick = ()=>{
   audio.play();
   loadVideo(2);
 };
 
-/* ===== TEXTO ===== */
 function showInviteWithDelay(){
   const nome = new URLSearchParams(location.search).get("nome");
   if(nome && convidados.includes(nome)){
@@ -310,27 +301,18 @@ function showInviteWithDelay(){
   }
 }
 
-/* ===== SOM ===== */
 audioCtrl.onclick = e=>{
   e.stopPropagation();
   audio.paused ? audio.play() : audio.pause();
 };
 
-/* ===== MENU ===== */
 menuToggle.onclick = e=>{
   e.stopPropagation();
   menu.style.display = menu.style.display==="block"?"none":"block";
 };
 
-/* ===== RETORNO ===== */
-backBtn.onclick = ()=>{
-  loadVideo(2,true);
-};
-
-/* ===== NAVEGAÇÃO ===== */
-function goVideo(n){
-  loadVideo(n);
-}
+backBtn.onclick = ()=> loadVideo(2,true);
+function goVideo(n){ loadVideo(n); }
 </script>
 
 </body>
