@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Convite Interativo</title>
 
-<!-- ===== CAPA DE LINK / OPEN GRAPH ===== -->
-<meta property="og:type" content="website">
-<meta property="og:title" content="Você está convidado para um momento especial">
-<meta property="og:description" content="Um convite interativo preparado com carinho. Clique e viva essa experiência.">
-<meta property="og:image" content="https://SEU_USUARIO.github.io/SEU_REPOSITORIO/capalink.png">
-<meta property="og:url" content="https://SEU_USUARIO.github.io/SEU_REPOSITORIO/">
-<meta property="og:site_name" content="Convite Especial">
+<!-- ===== CAPALINK / PREVIEW ===== -->
+<meta property="og:title" content="Convite Interativo Especial" />
+<meta property="og:description" content="Você foi convidado para um momento inesquecível! Veja o convite interativo preparado especialmente para você." />
+<meta property="og:image" content="https://SEUUSUARIO.github.io/NOME-REPO/media/capalink.png" />
+<meta property="og:url" content="https://SEUUSUARIO.github.io/NOME-REPO/index.html" />
+<meta property="og:type" content="website" />
 
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Você está convidado para um momento especial">
-<meta name="twitter:description" content="Convite interativo exclusivo. Clique para acessar.">
-<meta name="twitter:image" content="https://SEU_USUARIO.github.io/SEU_REPOSITORIO/capalink.png">
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content="Convite Interativo Especial" />
+<meta name="twitter:description" content="Você foi convidado para um momento inesquecível! Veja o convite interativo preparado especialmente para você." />
+<meta name="twitter:image" content="https://SEUUSUARIO.github.io/NOME-REPO/media/capalink.png" />
 
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#000}
 
+/* ===== VIDEO ===== */
 #video{
   position:absolute;
   inset:0;
@@ -31,9 +31,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   z-index:1;
 }
 
+/* ===== AUDIO ===== */
 #audio{display:none}
 
-/* convite */
+/* ===== TEXTO CONVIDADO ===== */
 #footerInvite{
   position:absolute;
   bottom:6%;
@@ -47,65 +48,127 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   transition:.8s;
   pointer-events:none;
 }
-#footerInvite.show{opacity:1;transform:translateY(0)}
-#footerInvite span{display:block;margin-top:6px;font-size:18px}
-
-/* overlays */
-#video1Click{position:absolute;inset:0;z-index:10}
-#audioControl,#menuToggle,#backToVideo2{
-  position:absolute;top:15px;z-index:20;display:none
+#footerInvite.show{
+  opacity:1;
+  transform:translateY(0);
 }
-#audioControl{left:15px;width:80px;height:80px}
-#menuToggle,#backToVideo2{right:15px;width:120px;height:80px}
+#footerInvite span{
+  display:block;
+  margin-top:6px;
+  font-size:18px;
+}
 
-/* menu */
+/* ===== CLIQUE VIDEO 1 ===== */
+#video1Click{
+  position:absolute;
+  inset:0;
+  z-index:10;
+}
+
+/* ===== CONTROLES ===== */
+#audioControl{
+  position:absolute;
+  top:15px;
+  left:15px;
+  width:80px;
+  height:80px;
+  z-index:20;
+  display:none;
+}
+#menuToggle,#backToVideo2{
+  position:absolute;
+  top:15px;
+  right:15px;
+  width:120px;
+  height:80px;
+  z-index:20;
+  display:none;
+}
+
+/* ===== MENU ===== */
 #menu{
   position:absolute;
-  right:0;top:70%;
+  right:0;
+  top:70%;
   transform:translateY(-50%);
-  width:300px;height:520px;
+  width:300px;
+  height:520px;
   background:url("media/menu.png") no-repeat right center;
   background-size:contain;
-  display:none;z-index:15;pointer-events:none
+  display:none;
+  z-index:15;
+  pointer-events:none;
 }
 .menu-hotspot{
-  position:absolute;right:35px;width:90px;height:70px;
-  pointer-events:auto;cursor:pointer
+  position:absolute;
+  right:35px;
+  width:90px;
+  height:70px;
+  cursor:pointer;
+  pointer-events:auto;
 }
-#btn1{top:95px} #btn2{top:195px} #btn3{top:295px}
+#btn1{top:95px}
+#btn2{top:195px}
+#btn3{top:295px}
 
-/* hotspots */
-#mapsHotspot,#formHotspot{
-  position:absolute;left:50%;
+/* ===== MAPS VIDEO 3 ===== */
+#mapsHotspot{
+  position:absolute;
+  left:50%;
+  bottom:200px;
   transform:translateX(-50%);
-  width:320px;z-index:20;display:none
+  width:320px;
+  height:120px;
+  z-index:20;
+  display:none;
 }
-#mapsHotspot{bottom:200px;height:120px}
-#formHotspot{bottom:80px;height:90px}
 
-/* cronômetro */
+/* ===== FORM VIDEO 4 ===== */
+#formHotspot{
+  position:absolute;
+  left:50%;
+  bottom:80px;
+  transform:translateX(-50%);
+  width:320px;
+  height:90px;
+  z-index:20;
+  display:none;
+}
+
+/* ===== CRONÔMETRO VIDEO 4 ===== */
 #countdown{
-  position:absolute;left:50%;bottom:200px;
+  position:absolute;
+  left:50%;
+  bottom:200px;
   transform:translateX(-50%);
-  display:none;z-index:20;
-  color:#fff;font-family:Arial
+  display:none;
+  z-index:20;
+  color:#fff;
+  font-family:Arial,sans-serif;
 }
 .count-grid{display:flex;gap:14px;text-align:center}
 .count-box{min-width:70px}
 .count-num{font-size:28px;font-weight:bold}
 .count-label{font-size:12px;margin-top:4px}
 
-/* transição */
+/* ===== TRANSIÇÃO ===== */
 #transition{
-  position:absolute;inset:0;
-  display:none;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.15);z-index:50
+  position:absolute;
+  inset:0;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  z-index:50;
+  background:rgba(0,0,0,.15);
 }
-#transition img{width:140px;animation:zoomIcon .9s ease forwards}
+#transition img{
+  width:140px;
+  animation:zoomIcon .9s ease forwards;
+}
 @keyframes zoomIcon{
   0%{transform:scale(.2);opacity:0}
   40%{transform:scale(1.1);opacity:1}
-  70%{transform:scale(.95)}
+  70%{transform:scale(.95);opacity:1}
   100%{transform:scale(.3);opacity:0}
 }
 </style>
@@ -118,6 +181,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 
 <div id="video1Click"></div>
 <div id="footerInvite"></div>
+
 <div id="audioControl"></div>
 <div id="menuToggle"></div>
 <div id="backToVideo2"></div>
@@ -131,14 +195,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 <a id="mapsHotspot" href="https://maps.app.goo.gl/AZBjKdxYEqVsC6N38" target="_blank"></a>
 <a id="formHotspot" href="https://forms.gle/gCTygBPyy5mx22aZA" target="_blank"></a>
 
-<div id="transition"><img src="media/icon.png"></div>
+<div id="transition">
+  <img src="media/icon.png">
+</div>
 
 <div id="countdown">
   <div class="count-grid">
-    <div class="count-box"><div id="d" class="count-num">00</div><div class="count-label">Dias</div></div>
-    <div class="count-box"><div id="h" class="count-num">00</div><div class="count-label">Horas</div></div>
-    <div class="count-box"><div id="m" class="count-num">00</div><div class="count-label">Min</div></div>
-    <div class="count-box"><div id="s" class="count-num">00</div><div class="count-label">Seg</div></div>
+    <div class="count-box"><div class="count-num" id="d">00</div><div class="count-label">Dias</div></div>
+    <div class="count-box"><div class="count-num" id="h">00</div><div class="count-label">Horas</div></div>
+    <div class="count-box"><div class="count-num" id="m">00</div><div class="count-label">Min</div></div>
+    <div class="count-box"><div class="count-num" id="s">00</div><div class="count-label">Seg</div></div>
   </div>
 </div>
 
@@ -147,18 +213,36 @@ const LOOP_START = 7;
 const EVENT_DATE = "2026-08-20T18:00:00";
 let video2FirstPlay = true;
 let countdownInterval;
+let preloaded = false;
+
+const convidados=["Drika","Andressa","Ramon","Myrtes","Thais","Marcela","Tatiane","Kelly","Katia","Aline"];
 
 const video=document.getElementById("video");
 const audio=document.getElementById("audio");
+const footer=document.getElementById("footerInvite");
+const clickV1=document.getElementById("video1Click");
+const audioCtrl=document.getElementById("audioControl");
+const menuToggle=document.getElementById("menuToggle");
+const menu=document.getElementById("menu");
+const backBtn=document.getElementById("backToVideo2");
+const mapsHotspot=document.getElementById("mapsHotspot");
+const countdown=document.getElementById("countdown");
+const formHotspot=document.getElementById("formHotspot");
+const transition=document.getElementById("transition");
 
-const preloadVideos=[2,3,4,5].map(n=>{
-  const v=document.createElement("video");
-  v.src=`media/video${n}.mp4`;
-  v.preload="auto";
-  return v;
-});
+function preloadNextVideos(){
+  if(preloaded) return;
+  preloaded = true;
+  [3,4,5].forEach(n=>{
+    const v=document.createElement("video");
+    v.src=`media/video${n}.mp4`;
+    v.preload="auto";
+    v.muted=true;
+    v.playsInline=true;
+  });
+}
 
-function resetEvents(){
+function resetVideoEvents(){
   video.onended=null;
   video.ontimeupdate=null;
   video.onloadedmetadata=null;
@@ -166,24 +250,27 @@ function resetEvents(){
 }
 
 function loadVideo(n,fromReturn=false){
-  resetEvents();
+  resetVideoEvents();
   video.src=`media/video${n}.mp4`;
+  video.load();
   video.play();
 
-  video.muted = (n===1);
+  footer.classList.remove("show");
+  clickV1.style.display=n===1?"block":"none";
+  audioCtrl.style.display=n===2?"block":"none";
+  menuToggle.style.display=n===2?"block":"none";
+  menu.style.display="none";
+  backBtn.style.display=n>=3?"block":"none";
+  mapsHotspot.style.display=n===3?"block":"none";
+  countdown.style.display=n===4?"block":"none";
+  formHotspot.style.display=n===4?"block":"none";
 
-  document.getElementById("video1Click").style.display=n===1?"block":"none";
-  document.getElementById("audioControl").style.display=n===2?"block":"none";
-  document.getElementById("menuToggle").style.display=n===2?"block":"none";
-  document.getElementById("menu").style.display="none";
-  document.getElementById("backToVideo2").style.display=n>=3?"block":"none";
-  document.getElementById("mapsHotspot").style.display=n===3?"block":"none";
-  document.getElementById("countdown").style.display=n===4?"block":"none";
-  document.getElementById("formHotspot").style.display=n===4?"block":"none";
-
+  if(n===1) showInviteWithDelay();
   if(n===4) startCountdown();
 
   if(n===2){
+    preloadNextVideos();
+
     if(video2FirstPlay && !fromReturn){
       video.onended=()=>video.pause();
       video2FirstPlay=false;
@@ -206,10 +293,14 @@ function loadVideo(n,fromReturn=false){
 }
 
 function goVideoWithTransition(n){
-  const t=document.getElementById("transition");
-  t.style.display="flex";
+  transition.style.display="flex";
+  const img=transition.firstElementChild;
+  img.style.animation="none";
+  img.offsetHeight;
+  img.style.animation="zoomIcon .9s ease forwards";
+
   setTimeout(()=>{
-    t.style.display="none";
+    transition.style.display="none";
     loadVideo(n);
   },900);
 }
@@ -226,18 +317,33 @@ function startCountdown(){
   },1000);
 }
 
-document.getElementById("video1Click").onclick=()=>{
+function showInviteWithDelay(){
+  const nome=new URLSearchParams(location.search).get("nome");
+  if(nome && convidados.includes(nome)){
+    setTimeout(()=>{
+      footer.innerHTML=`<strong>${nome},</strong><span>Este convite foi preparado<br>especialmente para você</span>`;
+      footer.classList.add("show");
+    },1000);
+  }
+}
+
+/* ===== CONTROLE DE SOM ===== */
+clickV1.onclick=()=>{
   audio.play();
   loadVideo(2);
 };
 
-document.getElementById("menuToggle").onclick=e=>{
+audioCtrl.onclick=e=>{
   e.stopPropagation();
-  const m=document.getElementById("menu");
-  m.style.display=m.style.display==="block"?"none":"block";
+  audio.paused ? audio.play() : audio.pause();
 };
 
-document.getElementById("backToVideo2").onclick=()=>loadVideo(2,true);
+menuToggle.onclick=e=>{
+  e.stopPropagation();
+  menu.style.display=menu.style.display==="block"?"none":"block";
+};
+
+backBtn.onclick=()=>loadVideo(2,true);
 
 loadVideo(1);
 </script>
