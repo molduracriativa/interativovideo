@@ -9,6 +9,7 @@
 *{margin:0;padding:0;box-sizing:border-box}
 html,body{width:100%;height:100%;overflow:hidden;background:#000}
 
+/* ===== VIDEO ===== */
 #video{
   position:absolute;
   inset:0;
@@ -18,8 +19,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   z-index:1;
 }
 
+/* ===== AUDIO ===== */
 #audio{display:none}
 
+/* ===== TEXTO CONVIDADO ===== */
 #footerInvite{
   position:absolute;
   bottom:6%;
@@ -43,14 +46,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   font-size:18px;
 }
 
+/* ===== DEBUG ===== */
 .debug{background:rgba(255,0,0,.35)}
 
+/* ===== CLIQUE VIDEO 1 ===== */
 #video1Click{
   position:absolute;
   inset:0;
   z-index:10;
 }
 
+/* ===== CONTROLES ===== */
 #audioControl{
   position:absolute;
   top:15px;
@@ -70,6 +76,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
   display:none;
 }
 
+/* ===== MENU ===== */
 #menu{
   position:absolute;
   right:0;
@@ -95,6 +102,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
 #btn2{top:195px}
 #btn3{top:295px}
 
+/* ===== MAPS VIDEO 3 ===== */
 #mapsHotspot{
   position:absolute;
   left:50%;
@@ -132,7 +140,8 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000}
    target="_blank"></a>
 
 <script>
-const LOOP_START = 11;
+/* ===== CONFIG ===== */
+const LOOP_START = 7;
 let video2FirstPlay = true;
 
 const convidados = [
@@ -150,12 +159,14 @@ const menu = document.getElementById("menu");
 const backBtn = document.getElementById("backToVideo2");
 const mapsHotspot = document.getElementById("mapsHotspot");
 
+/* ===== RESET ===== */
 function resetVideoEvents(){
   video.onended = null;
   video.ontimeupdate = null;
   video.onloadedmetadata = null;
 }
 
+/* ===== LOAD VIDEO ===== */
 function loadVideo(n, fromReturn=false){
   resetVideoEvents();
 
@@ -173,7 +184,7 @@ function loadVideo(n, fromReturn=false){
 
   if(n===1) showInviteWithDelay();
 
-  /* VIDEO 2 */
+  /* ===== VIDEO 2 ===== */
   if(n===2){
     if(video2FirstPlay && !fromReturn){
       video.onended = ()=> video.pause();
@@ -181,39 +192,34 @@ function loadVideo(n, fromReturn=false){
     }else{
       video.onloadedmetadata = ()=>{
         video.currentTime = LOOP_START;
-        video.play();
       };
       video.ontimeupdate = ()=>{
-        if(video.currentTime >= video.duration - 0.25){
+        if(video.currentTime >= video.duration - 0.2){
           video.currentTime = LOOP_START;
-          video.play();
         }
       };
     }
   }
 
-  /* VIDEOS 3,4,5 — LOOP REAL */
+  /* ===== VIDEOS 3,4,5 (CORRIGIDO) ===== */
   if(n>=3){
-    video.onloadedmetadata = ()=>{
-      video.currentTime = LOOP_START;
+    video.onended = ()=>{
+      video.currentTime = 0;
       video.play();
-    };
-    video.ontimeupdate = ()=>{
-      if(video.currentTime >= video.duration - 0.25){
-        video.currentTime = LOOP_START;
-        video.play();
-      }
     };
   }
 }
 
+/* ===== INICIO ===== */
 loadVideo(1);
 
+/* ===== CLIQUE VIDEO 1 ===== */
 clickV1.onclick = ()=>{
   audio.play();
   loadVideo(2);
 };
 
+/* ===== TEXTO ===== */
 function showInviteWithDelay(){
   const nome = new URLSearchParams(location.search).get("nome");
   if(nome && convidados.includes(nome)){
@@ -225,20 +231,24 @@ function showInviteWithDelay(){
   }
 }
 
+/* ===== SOM ===== */
 audioCtrl.onclick = e=>{
   e.stopPropagation();
   audio.paused ? audio.play() : audio.pause();
 };
 
+/* ===== MENU ===== */
 menuToggle.onclick = e=>{
   e.stopPropagation();
   menu.style.display = menu.style.display==="block"?"none":"block";
 };
 
+/* ===== RETORNO ===== */
 backBtn.onclick = ()=>{
   loadVideo(2,true);
 };
 
+/* ===== NAVEGAÇÃO ===== */
 function goVideo(n){
   loadVideo(n);
 }
